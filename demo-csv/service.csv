@@ -1,0 +1,11 @@
+id,code,name,category_id,department_id,description,duration_min,created_at,updated_at
+1,SRV001,Internisticki pregled,1,1,Internisticki pregled,30,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,SRV002,Dermatoloski pregled,1,2,Dermatoloski pregled,25,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,SRV003,RTG pluca,4,3,RTG pluca,20,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,SRV004,Kompletna krvna slika,8,4,Kompletna krvna slika,10,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,SRV005,Pedijatrijski pregled,1,5,Pedijatrijski pregled,30,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,SRV006,ORL pregled,1,6,ORL pregled,30,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,SRV007,Neuroloski pregled,1,7,Neuroloski pregled,35,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,SRV008,Ginekoloski pregled,1,8,Ginekoloski pregled,30,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,SRV009,Ortopedski pregled,1,9,Ortopedski pregled,30,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,SRV010,EKG snimanje,5,10,EKG snimanje,15,2026-04-08 10:00:00,2026-04-08 10:00:00

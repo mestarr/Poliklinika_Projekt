@@ -1,0 +1,11 @@
+id,code,name,description,created_at,updated_at
+1,LAB,Laboratorijski nalaz,Laboratorijski nalaz,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,UZV,Ultrazvucni nalaz,Ultrazvucni nalaz,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,RTG,Radioloski nalaz,Radioloski nalaz,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,EKG,Kardioloski nalaz,Kardioloski nalaz,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,DERM,Dermatoloski nalaz,Dermatoloski nalaz,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,ORL,ORL nalaz,ORL nalaz,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,NEU,Neuroloski nalaz,Neuroloski nalaz,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,GYN,Ginekoloski nalaz,Ginekoloski nalaz,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,ORT,Ortopedski nalaz,Ortopedski nalaz,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,OPCI,Opca medicinska dokumentacija,Opca medicinska dokumentacija,2026-04-08 10:00:00,2026-04-08 10:00:00

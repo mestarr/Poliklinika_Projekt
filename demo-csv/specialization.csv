@@ -1,0 +1,11 @@
+id,code,name,description,created_at,updated_at
+1,SPEC-INT,Specijalist interne medicine,Specijalist interne medicine,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,SPEC-DER,Specijalist dermatologije,Specijalist dermatologije,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,SPEC-RAD,Specijalist radiologije,Specijalist radiologije,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,SPEC-LAB,Medicinski biokemicar,Medicinski biokemicar,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,SPEC-PED,Specijalist pedijatrije,Specijalist pedijatrije,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,SPEC-ORL,Specijalist ORL,Specijalist ORL,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,SPEC-NEU,Specijalist neurologije,Specijalist neurologije,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,SPEC-GYN,Specijalist ginekologije,Specijalist ginekologije,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,SPEC-ORT,Specijalist ortopedije,Specijalist ortopedije,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,SPEC-CAR,Specijalist kardiologije,Specijalist kardiologije,2026-04-08 10:00:00,2026-04-08 10:00:00

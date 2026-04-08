@@ -1,0 +1,11 @@
+id,code,name,description,unit,created_at,updated_at
+1,GLU,Glukoza,Glukoza,mmol/L,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,CHOL,Kolesterol ukupni,Kolesterol ukupni,mmol/L,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,HDL,HDL kolesterol,HDL kolesterol,mmol/L,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,LDL,LDL kolesterol,LDL kolesterol,mmol/L,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,TRIG,Trigliceridi,Trigliceridi,mmol/L,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,CRP,C-reaktivni protein,C-reaktivni protein,mg/L,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,HGB,Hemoglobin,Hemoglobin,g/L,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,WBC,Leukociti,Leukociti,10^9/L,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,PLT,Trombociti,Trombociti,10^9/L,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,TSH,TSH,TSH,mIU/L,2026-04-08 10:00:00,2026-04-08 10:00:00

@@ -1,4 +1,5 @@
-CREATE DATABASE IF NOT EXISTS poliklinika
+DROP DATABASE IF EXISTS poliklinika;
+CREATE DATABASE poliklinika;
 
 USE poliklinika;
 
@@ -36,8 +37,8 @@ CREATE TABLE department (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
   PRIMARY KEY (id),
-  UNIQUE KEY uq_department_code (code)
-  KEY idx_department_code (code),
+  UNIQUE KEY uq_department_code (code),
+  KEY idx_department_code (code)
 );
 
 -- Tablica: office -> ordinacije/kabineti unutar odjela
@@ -50,7 +51,7 @@ CREATE TABLE office (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
   PRIMARY KEY (id),
-  UNIQUE KEY uq_office_code (office_code),
+  UNIQUE KEY uq_office_code (code),
   KEY idx_office_code (code),
   KEY idx_office_department_id (department_id),
   CONSTRAINT fk_office_department
@@ -68,7 +69,7 @@ CREATE TABLE specialization (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
   PRIMARY KEY (id),
   UNIQUE KEY uq_specialization_code (code),
-  KEY idx_specialization_code (code),
+  KEY idx_specialization_code (code)
 );
 
 -- Tablica: employee -> zaposlenici poliklinike
@@ -132,12 +133,12 @@ CREATE TABLE service (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
   PRIMARY KEY (id),
-  UNIQUE KEY uq_service_code (service_code),
+  UNIQUE KEY uq_service_code (code),
   KEY idx_service_code (code),
-  KEY idx_service_category_id (service_category_id),
+  KEY idx_service_category_id (category_id),
   KEY idx_service_department_id (department_id),
   CONSTRAINT fk_service_category
-    FOREIGN KEY (service_category_id) REFERENCES service_category (id)
+    FOREIGN KEY (category_id) REFERENCES service_category (id)
      ON DELETE RESTRICT,
   CONSTRAINT fk_service_department
     FOREIGN KEY (department_id) REFERENCES department (id)
@@ -158,7 +159,7 @@ CREATE TABLE service_price (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
   PRIMARY KEY (id),
   KEY idx_service_price_service_id (service_id),
-  KEY idx_service_price_valid_from (valid_from),
+  KEY idx_service_price_date_from (date_from),
   CONSTRAINT fk_service_price_service
     FOREIGN KEY (service_id) REFERENCES service (id)
     ON UPDATE CASCADE ON DELETE RESTRICT
@@ -177,7 +178,7 @@ CREATE TABLE referral (
   KEY idx_referral_patient_id (patient_id),
   CONSTRAINT fk_referral_patient
     FOREIGN KEY (patient_id) REFERENCES patient (id)
-    ON DELETE CASCADE,
+    ON DELETE CASCADE
 ) ;
 
 
@@ -190,8 +191,8 @@ CREATE TABLE appointment_status (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
   PRIMARY KEY (id),
-  UNIQUE KEY uq_appointment_status_code (code)
-  KEY idx_appointment_status_code (code),
+  UNIQUE KEY uq_appointment_status_code (code),
+  KEY idx_appointment_status_code (code)
 );
 
 -- Tablica: employee_schedule -> raspored djelatnika
@@ -210,7 +211,7 @@ CREATE TABLE employee_schedule (
   CONSTRAINT chk_employee_schedule_time_range CHECK (time_from <= time_to),
   CONSTRAINT fk_employee_schedule_employee
     FOREIGN KEY (employee_id) REFERENCES employee (id)
-    ON DELETE RESTRICT,
+    ON DELETE RESTRICT
 ) ;
 
 -- Tablica: appointment -> termini pacijenata
@@ -325,7 +326,7 @@ CREATE TABLE diagnosis (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
   PRIMARY KEY (id),
-  UNIQUE KEY uq_diagnosis_code (diagnosis_code)
+  UNIQUE KEY uq_diagnosis_code (code)
 ) ;
 
 -- Tablica: examination_diagnosis -> povezivanje pregleda i dijagnoza

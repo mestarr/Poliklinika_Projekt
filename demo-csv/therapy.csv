@@ -1,0 +1,11 @@
+id,examination_id,patient_id,employee_id,finding_id,recommended_at,recommendation_text,follow_up_required_flag,follow_up_date,note,created_at,updated_at
+1,1,1,1,1,2026-04-01 13:00:00,"Nastaviti s postojecim rezimom, povecati fizicku aktivnost i hidraciju.",1,2026-07-01,Kontrola po potrebi ranije,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,2,2,2,2,2026-04-02 13:00:00,"Nastaviti s postojecim rezimom, povecati fizicku aktivnost i hidraciju.",1,2026-07-02,Kontrola po potrebi ranije,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,3,3,3,3,2026-04-03 13:00:00,"Nastaviti s postojecim rezimom, povecati fizicku aktivnost i hidraciju.",1,2026-07-03,Kontrola po potrebi ranije,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,4,4,4,4,2026-04-04 13:00:00,"Nastaviti s postojecim rezimom, povecati fizicku aktivnost i hidraciju.",1,2026-07-04,Kontrola po potrebi ranije,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,5,5,5,5,2026-04-05 13:00:00,"Nastaviti s postojecim rezimom, povecati fizicku aktivnost i hidraciju.",1,2026-07-05,Kontrola po potrebi ranije,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,6,6,6,6,2026-04-06 13:00:00,"Nastaviti s postojecim rezimom, povecati fizicku aktivnost i hidraciju.",1,2026-07-06,Kontrola po potrebi ranije,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,7,7,7,7,2026-04-07 13:00:00,"Nastaviti s postojecim rezimom, povecati fizicku aktivnost i hidraciju.",1,2026-07-07,Kontrola po potrebi ranije,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,8,8,8,8,2026-04-08 13:00:00,"Nastaviti s postojecim rezimom, povecati fizicku aktivnost i hidraciju.",1,2026-07-08,Kontrola po potrebi ranije,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,9,9,9,9,2026-04-09 13:00:00,"Nastaviti s postojecim rezimom, povecati fizicku aktivnost i hidraciju.",1,2026-07-09,Kontrola po potrebi ranije,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,10,10,10,10,2026-04-10 13:00:00,"Nastaviti s postojecim rezimom, povecati fizicku aktivnost i hidraciju.",1,2026-07-10,Kontrola po potrebi ranije,2026-04-08 10:00:00,2026-04-08 10:00:00

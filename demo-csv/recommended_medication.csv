@@ -1,0 +1,11 @@
+id,therapy_id,medication_name,dosage,instruction,duration_days,note,created_at,updated_at
+1,1,Ramipril 5 mg,1x dnevno,Uzimati nakon obroka prema uputi lijecnika,30,Bez prekida terapije,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,2,Metformin 850 mg,1x dnevno,Uzimati nakon obroka prema uputi lijecnika,30,Bez prekida terapije,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,3,Salbutamol inhaler,1x dnevno,Uzimati nakon obroka prema uputi lijecnika,30,Bez prekida terapije,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,4,Ibuprofen 400 mg,1x dnevno,Uzimati nakon obroka prema uputi lijecnika,30,Bez prekida terapije,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,5,Pantoprazol 20 mg,1x dnevno,Uzimati nakon obroka prema uputi lijecnika,30,Bez prekida terapije,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,6,Cetirizin 10 mg,1x dnevno,Uzimati nakon obroka prema uputi lijecnika,30,Bez prekida terapije,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,7,Nitrofurantoin 100 mg,1x dnevno,Uzimati nakon obroka prema uputi lijecnika,30,Bez prekida terapije,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,8,Sumatriptan 50 mg,1x dnevno,Uzimati nakon obroka prema uputi lijecnika,30,Bez prekida terapije,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,9,Paracetamol 500 mg,1x dnevno,Uzimati nakon obroka prema uputi lijecnika,30,Bez prekida terapije,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,10,Levotiroksin 50 mcg,1x dnevno,Uzimati nakon obroka prema uputi lijecnika,30,Bez prekida terapije,2026-04-08 10:00:00,2026-04-08 10:00:00

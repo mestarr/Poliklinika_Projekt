@@ -1,0 +1,11 @@
+id,employee_code,first_name,last_name,email,phone,title,specialization_id,department_id,office_id,employment_date,created_at,updated_at
+1,EMP001,Karlo,Bencic,karlo.bencic@poliklinika.hr,+38591555010,lijecnik,1,1,1,2010-01-15,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,EMP002,Iva,Mikic,iva.mikic@poliklinika.hr,+38591555011,lijecnik,2,2,2,2011-02-15,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,EMP003,Dario,Santic,dario.santic@poliklinika.hr,+38591555012,lijecnik,3,3,3,2012-03-15,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,EMP004,Lucija,Zoric,lucija.zoric@poliklinika.hr,+38591555013,lijecnik,4,4,4,2013-04-15,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,EMP005,Bruno,Tomic,bruno.tomic@poliklinika.hr,+38591555014,lijecnik,5,5,5,2014-05-15,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,EMP006,Lea,Vukovic,lea.vukovic@poliklinika.hr,+38591555015,lijecnik,6,6,6,2015-06-15,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,EMP007,Andrej,Cavric,andrej.cavric@poliklinika.hr,+38591555016,lijecnik,7,7,7,2016-07-15,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,EMP008,Katarina,Ristic,katarina.ristic@poliklinika.hr,+38591555017,lijecnik,8,8,8,2017-08-15,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,EMP009,Vedran,Miletic,vedran.miletic@poliklinika.hr,+38591555018,lijecnik,9,9,9,2018-09-15,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,EMP010,Marta,Soldo,marta.soldo@poliklinika.hr,+38591555019,lijecnik,10,10,10,2019-01-15,2026-04-08 10:00:00,2026-04-08 10:00:00

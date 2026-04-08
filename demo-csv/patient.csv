@@ -1,0 +1,11 @@
+id,oib,mbo,first_name,last_name,gender,date_of_birth,phone,email,address,city,note,created_at,updated_at
+1,19876543210,1000000001,Ivan,Horvat,m,1982-03-14,+385911112221,ivan.horvat@example.hr,Ilica 12,Zagreb,Aktivan pacijent,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,28765432109,1000000002,Ana,Kovac,f,1990-11-02,+385981234001,ana.kovac@example.hr,Ulica grada Vukovara 44,Zagreb,Aktivan pacijent,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,37654321098,1000000003,Marko,Babic,m,1976-06-25,+385992220031,marko.babic@example.hr,Osjecka 8,Split,Aktivan pacijent,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,46543210987,1000000004,Petra,Novak,f,1988-01-30,+385912340877,petra.novak@example.hr,Rijecka 21,Rijeka,Aktivan pacijent,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,55432109876,1000000005,Luka,Maric,m,1995-09-12,+385981110445,luka.maric@example.hr,Varazdinska 5,Varazdin,Aktivan pacijent,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,64321098765,1000000006,Maja,Jukic,f,1984-04-17,+385995553332,maja.jukic@example.hr,Zadarska 13,Zadar,Aktivan pacijent,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,73210987654,1000000007,Filip,Knez,m,2000-07-09,+385919991234,filip.knez@example.hr,Dubrovacka 50,Dubrovnik,Aktivan pacijent,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,82109876543,1000000008,Nina,Peric,f,1993-12-05,+385983335551,nina.peric@example.hr,Krapinska 2,Karlovac,Aktivan pacijent,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,91098765432,1000000009,Tomislav,Matic,m,1971-08-19,+385912223334,tomislav.matic@example.hr,Slavonska avenija 120,Zagreb,Aktivan pacijent,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,10987654321,1000000010,Sara,Grgic,f,1998-05-22,+385976661111,sara.grgic@example.hr,Drziceva 77,Zagreb,Aktivan pacijent,2026-04-08 10:00:00,2026-04-08 10:00:00

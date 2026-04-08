@@ -1,0 +1,11 @@
+id,code,name,description,created_at,updated_at
+1,INT,Interna medicina,Odjel Interna medicina,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,DER,Dermatologija,Odjel Dermatologija,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,RAD,Radiologija,Odjel Radiologija,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,LAB,Laboratorij,Odjel Laboratorij,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,PED,Pedijatrija,Odjel Pedijatrija,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,ORL,Otorinolaringologija,Odjel Otorinolaringologija,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,NEU,Neurologija,Odjel Neurologija,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,GYN,Ginekologija,Odjel Ginekologija,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,ORT,Ortopedija,Odjel Ortopedija,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,CAR,Kardiologija,Odjel Kardiologija,2026-04-08 10:00:00,2026-04-08 10:00:00

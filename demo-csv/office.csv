@@ -1,0 +1,11 @@
+id,department_id,code,name,description,created_at,updated_at
+1,1,ORD-01,Ordinacija Interna medicina,Primarna ordinacija za Interna medicina,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,2,ORD-02,Ordinacija Dermatologija,Primarna ordinacija za Dermatologija,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,3,ORD-03,Ordinacija Radiologija,Primarna ordinacija za Radiologija,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,4,ORD-04,Ordinacija Laboratorij,Primarna ordinacija za Laboratorij,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,5,ORD-05,Ordinacija Pedijatrija,Primarna ordinacija za Pedijatrija,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,6,ORD-06,Ordinacija Otorinolaringologija,Primarna ordinacija za Otorinolaringologija,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,7,ORD-07,Ordinacija Neurologija,Primarna ordinacija za Neurologija,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,8,ORD-08,Ordinacija Ginekologija,Primarna ordinacija za Ginekologija,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,9,ORD-09,Ordinacija Ortopedija,Primarna ordinacija za Ortopedija,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,10,ORD-10,Ordinacija Kardiologija,Primarna ordinacija za Kardiologija,2026-04-08 10:00:00,2026-04-08 10:00:00

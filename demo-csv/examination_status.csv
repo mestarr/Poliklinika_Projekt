@@ -1,0 +1,11 @@
+id,code,name,description,created_at,updated_at
+1,PLANNED,Planiran,Planiran,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,STARTED,Zapocet,Zapocet,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,DONE,Zavrsen,Zavrsen,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,SIGNED,Potpisan,Potpisan,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,ARCHIVED,Arhiviran,Arhiviran,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,NEEDS_REVIEW,Treba reviziju,Treba reviziju,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,BILLED,Obracunat,Obracunat,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,CLOSED,Zatvoren,Zatvoren,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,VOID,Storniran,Storniran,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,FOLLOW_UP,Kontrola,Kontrola,2026-04-08 10:00:00,2026-04-08 10:00:00
