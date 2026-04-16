@@ -4,213 +4,202 @@ CREATE DATABASE poliklinika;
 USE poliklinika;
 
 
--- Tablica: patient -> osnovni podaci o pacijentu
-CREATE TABLE patient (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, -- Jedinstveni identifikator pacijenta (PK)
-  oib CHAR(11) NOT NULL, -- OIB pacijenta
-  mbo VARCHAR(30) NOT NULL , -- MBO osiguranika
-  first_name VARCHAR(100) NOT NULL, -- Ime pacijenta
-  last_name VARCHAR(100) NOT NULL, -- Prezime pacijenta
-  gender CHAR(1) NOT NULL DEFAULT 'm', -- Spol pacijenta (m/f/o)
-  date_of_birth DATE NOT NULL, -- Datum rodenja pacijenta
-  phone VARCHAR(50) NOT NULL , -- Kontakt telefon pacijenta
-  email VARCHAR(100) NOT NULL, -- Kontakt e-mail pacijenta
-  address VARCHAR(255) NOT NULL, -- Adresa pacijenta
-  city VARCHAR(100) NOT NULL , -- Grad pacijenta
-  note VARCHAR(1000) NOT NULL DEFAULT '-', -- Napomena o pacijentu
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
-  PRIMARY KEY (id),
-  UNIQUE KEY uq_patient_oib (oib),
-  INDEX idx_patient_oib (oib),
-  UNIQUE KEY uq_patient_mbo (mbo),
-  INDEX idx_patient_mbo (mbo),
-  CONSTRAINT chk_patient_gender CHECK (gender IN ('m', 'f', 'o'))
+CREATE TABLE pacijent (
+  id_pacijent BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, 
+  oib CHAR(11) NOT NULL, 
+  mbo VARCHAR(30) NOT NULL , 
+  ime VARCHAR(100) NOT NULL, 
+  prezime VARCHAR(100) NOT NULL,
+  spol CHAR(1) NOT NULL DEFAULT 'm',
+  datum_rodjenja DATE NOT NULL, 
+  broj_mobitela VARCHAR(50) NOT NULL , 
+  email_adresa VARCHAR(100) NOT NULL,
+  adresa_stanovanja VARCHAR(255) NOT NULL,
+  grad VARCHAR(100) NOT NULL , 
+  biljeska VARCHAR(1000) NOT NULL DEFAULT '-',
+  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_pacijent),
+  UNIQUE KEY uq_oib_pacijenta (oib),
+  INDEX idx_oib_pacijenta (oib),
+  UNIQUE KEY uq_mbo_pacijenta (mbo),
+  INDEX idx_mbo_pacijenta (mbo),
+  CONSTRAINT chk_spol_pacijenta CHECK (spol IN ('m', 'ž', 'o'))
 );
 
--- Tablica: department -> organizacijske jedinice poliklinike
-CREATE TABLE department (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, -- Jedinstveni identifikator odjela (PK)
-  code VARCHAR(50) NOT NULL, -- Sifra odjela
-  name VARCHAR(200) NOT NULL, -- Naziv odjela
-  description VARCHAR(1000) NOT NULL DEFAULT '-', -- Opis odjela
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
+CREATE TABLE odjel (
+  id_odjel BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, 
+  sifra VARCHAR(50) NOT NULL, 
+  naziv VARCHAR(200) NOT NULL,
+  opis VARCHAR(1000) NOT NULL DEFAULT '-',
+  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY uq_department_code (code),
-  KEY idx_department_code (code)
+  UNIQUE KEY uq_sifra_odjela (sifra),
+  KEY idx_sifra_odjela (sifra)
 );
 
--- Tablica: office -> ordinacije/kabineti unutar odjela
-CREATE TABLE office (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, -- Jedinstveni identifikator ordinacije (PK)
-  department_id BIGINT UNSIGNED NOT NULL, -- Odjel kojem ordinacija pripada (FK -> department.id)
-  code VARCHAR(50) NOT NULL, -- Sifra ordinacije
-  name VARCHAR(200) NOT NULL, -- Naziv ordinacije
-  description VARCHAR(1000) NOT NULL DEFAULT '-', -- Opis ordinacije
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
+CREATE TABLE ordinacija (
+  id_ured BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, 
+  id_odjel BIGINT UNSIGNED NOT NULL, 
+  sifra VARCHAR(50) NOT NULL,
+  naziv VARCHAR(200) NOT NULL, 
+  opis VARCHAR(1000) NOT NULL DEFAULT '-', 
+ vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY uq_office_code (code),
-  KEY idx_office_code (code),
-  KEY idx_office_department_id (department_id),
-  CONSTRAINT fk_office_department
-    FOREIGN KEY (department_id) REFERENCES department (id)
+  UNIQUE KEY uq_sifra_ureda (sifra),
+  KEY idx_sifra_ureda (sifra),
+  KEY idx_ured_odjel (id_odjel),
+  CONSTRAINT fk_ured_odjel
+    FOREIGN KEY (odjel_id) REFERENCES odjel (id_odjel)
      ON DELETE RESTRICT
 ) ;
 
--- Tablica: specialization -> sifrarnik specijalizacija
-CREATE TABLE specialization (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, -- Jedinstveni identifikator specijalizacije (PK)
-  code VARCHAR(50) NOT NULL, -- Sifra specijalizacije
-  name VARCHAR(150) NOT NULL, -- Naziv specijalizacije
-  description VARCHAR(1000) NOT NULL DEFAULT '-', -- Opis specijalizacije
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
-  PRIMARY KEY (id),
-  UNIQUE KEY uq_specialization_code (code),
-  KEY idx_specialization_code (code)
+CREATE TABLE specijalizacija (
+  id_specijalizacija BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  sifra VARCHAR(50) NOT NULL UNIQUE,
+  naziv VARCHAR(150) NOT NULL,
+  opis VARCHAR(1000) DEFAULT '-',
+  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_specijalizacija),
+  UNIQUE KEY uq_sifra_specijalizacije (sifra),
+  KEY idx_sifra_specijalizacije (sifra)
 );
 
--- Tablica: employee -> zaposlenici poliklinike
-CREATE TABLE employee (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, -- Jedinstveni identifikator zaposlenika (PK)
-  employee_code VARCHAR(50) NOT NULL, -- Interna sifra zaposlenika
-  first_name VARCHAR(100) NOT NULL, -- Ime zaposlenika
-  last_name VARCHAR(100) NOT NULL, -- Prezime zaposlenika
-  email VARCHAR(100) NOT NULL DEFAULT '-', -- E-mail zaposlenika
-  phone VARCHAR(50) NOT NULL DEFAULT '-', -- Telefon zaposlenika
-  title VARCHAR(100) NOT NULL DEFAULT 'liječnik', -- Titula/zvanje zaposlenika
-  specialization_id BIGINT UNSIGNED NOT NULL, -- Specijalizacija zaposlenika (FK -> specialization.id)
-  department_id BIGINT UNSIGNED NOT NULL, -- Odjel zaposlenika (FK -> department.id)
-  office_id BIGINT UNSIGNED NOT NULL, -- Ordinacija zaposlenika (FK -> office.id)
-  employment_date DATE NOT NULL, -- Datum zaposlenja
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
-  PRIMARY KEY (id),
-  UNIQUE KEY uq_employee_code (employee_code),
-  KEY idx_employee_specialization_id (specialization_id),
-  KEY idx_employee_department_id (department_id),
-  KEY idx_employee_office_id (office_id),
-  CONSTRAINT fk_employee_specialization
-    FOREIGN KEY (specialization_id) REFERENCES specialization (id)
+
+CREATE TABLE zaposlenik (
+  id_zaposlenik BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  sifra VARCHAR(50) NOT NULL UNIQUE,
+  ime VARCHAR(100) NOT NULL,
+  prezime VARCHAR(100) NOT NULL,
+  email VARCHAR(100) DEFAULT '-',
+  telefon VARCHAR(50) DEFAULT '-',
+  titula VARCHAR(100) DEFAULT 'liječnik',
+  id_specijalizacija BIGINT UNSIGNED NOT NULL,
+  id_odjel BIGINT UNSIGNED NOT NULL,
+  id_ordinacija BIGINT UNSIGNED NOT NULL,
+  datum_zaposlenja DATE NOT NULL,
+  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_zaposlenik),
+  UNIQUE KEY uq_sifra_zaposlenika (sifra),
+  KEY idx_zaposlenik_id_specijalizacija (id_specijalizacija),
+  KEY idx_zaposlenik_id_odjel (id_odjel),
+  KEY idx_zaposlenik_office_id (id_ordinacija),
+  CONSTRAINT fk_zaposlenik_specijalizacija
+    FOREIGN KEY (id_specijalizacija) REFERENCES specijalizacija (id_specijalizacija)
     ON DELETE RESTRICT,
-  CONSTRAINT fk_employee_department
-    FOREIGN KEY (department_id) REFERENCES department (id)
+  CONSTRAINT fk_zaposlenik_odjel
+    FOREIGN KEY (id_odjel) REFERENCES odjel (id_odjel)
     ON  DELETE RESTRICT,
-  CONSTRAINT fk_employee_office
-    FOREIGN KEY (office_id) REFERENCES office (id)
+  CONSTRAINT fk_zaposlenik_ordinacija
+    FOREIGN KEY (id_ordinacija) REFERENCES ordinacija (id_ordinacija)
     ON  DELETE RESTRICT
 );
 
 
--- Tablica: service_category -> kategorije usluga
-CREATE TABLE service_category (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, -- Jedinstveni identifikator kategorije (PK)
-  code VARCHAR(50) NOT NULL, -- Sifra kategorije usluge
-  name VARCHAR(100) NOT NULL, -- Naziv kategorije usluge
-  category_id BIGINT UNSIGNED NULL DEFAULT NULL, -- Nadredena kategorija (self FK)
-  description VARCHAR(500) NOT NULL DEFAULT '-', -- Opis kategorije usluge
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
+CREATE TABLE sifarnik_usluga (
+  id_sifarnik_usluga BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, 
+  sifra VARCHAR(50) NOT NULL, 
+  naziv VARCHAR(100) NOT NULL, 
+  id_parent_sifarnik_usluga BIGINT UNSIGNED NULL DEFAULT NULL,
+  opis VARCHAR(500) NOT NULL DEFAULT '-', 
+  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY uq_service_category_code (code),
-  KEY idx_service_category_code (code),
-  CONSTRAINT fk_service_category_parent
-    FOREIGN KEY (category_id) REFERENCES service_category (id)
+  UNIQUE KEY uq_sifra_sifarnika_usluga (sifra),
+  KEY idx_sifra_sifarnika_usluga (sifra),
+  CONSTRAINT fk_parent_sifarnik_usluga
+    FOREIGN KEY (id_parent_sifarnik_usluga) REFERENCES sifarnik_usluga (id_sifarnik_usluga)
     ON DELETE CASCADE
 );
 
--- Tablica: service -> popis usluga
-CREATE TABLE service (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, -- Jedinstveni identifikator usluge (PK)
-  code VARCHAR(50) NOT NULL, -- Sifra usluge
-  name VARCHAR(200) NOT NULL, -- Naziv usluge
-  category_id BIGINT UNSIGNED NOT NULL, -- Kategorija usluge (FK -> service_category.id)
-  department_id BIGINT UNSIGNED NOT NULL, -- Odjel koji pruza uslugu (FK -> department.id)
-  description VARCHAR(2000) NOT NULL DEFAULT '-', -- Opis usluge
-  duration_min INT NOT NULL DEFAULT 0, -- Trajanje usluge u minutama
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
-  PRIMARY KEY (id),
-  UNIQUE KEY uq_service_code (code),
-  KEY idx_service_code (code),
-  KEY idx_service_category_id (category_id),
-  KEY idx_service_department_id (department_id),
-  CONSTRAINT fk_service_category
-    FOREIGN KEY (category_id) REFERENCES service_category (id)
+CREATE TABLE usluga (
+  id_usluga BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, 
+  sifra VARCHAR(50) NOT NULL,
+  naziv VARCHAR(200) NOT NULL,
+  id_sifarnik_usluga BIGINT UNSIGNED NOT NULL,
+  id_odjel BIGINT UNSIGNED NOT NULL,
+  opis VARCHAR(2000) NOT NULL DEFAULT '-', 
+  trajanje_pregleda_minute INT NOT NULL DEFAULT 0, 
+  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_usluga),
+  UNIQUE KEY uq_sifra_usluge (sifra),
+  KEY idx_sifra_usluge (sifra),
+  KEY idx_sifarnik_usluga_id (id_sifarnik_usluga),
+  KEY idx_odjel_id (odjel_id),
+  CONSTRAINT fk_sifarnik_usluga
+    FOREIGN KEY (id_sifarnik_usluga) REFERENCES sifarnik_usluga (id_sifarnik_usluga)
      ON DELETE RESTRICT,
-  CONSTRAINT fk_service_department
-    FOREIGN KEY (department_id) REFERENCES department (id)
+  CONSTRAINT fk_usluga_odjel
+    FOREIGN KEY (id_odjel) REFERENCES odjel (id_odjel)
     ON DELETE RESTRICT
 );
 
--- Tablica: service_price -> cjenik usluga kroz vrijeme
-CREATE TABLE service_price (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, -- Jedinstveni identifikator zapisa cjenika (PK)
-  service_id BIGINT UNSIGNED NOT NULL, -- Usluga na koju se cijena odnosi (FK -> service.id)
-  date_from DATE NOT NULL, -- Datum od kada cijena vrijedi
-  date_to DATE NOT NULL DEFAULT '9999-12-31', -- Datum do kada cijena vrijedi
-  price DECIMAL(18,2) NOT NULL, -- Iznos cijene
-  currency CHAR(3) NOT NULL DEFAULT 'EUR', -- Valuta cijene (npr. EUR)
-  tax_rate DECIMAL(5,2) NOT NULL DEFAULT 0, -- Porezna stopa 
-  note VARCHAR(500) NOT NULL DEFAULT '-', -- Napomena uz cijenu
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
-  PRIMARY KEY (id),
-  KEY idx_service_price_service_id (service_id),
-  KEY idx_service_price_date_from (date_from),
-  CONSTRAINT fk_service_price_service
-    FOREIGN KEY (service_id) REFERENCES service (id)
+CREATE TABLE cijena_usluge (
+  id_cijena_usluge BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, 
+  id_usluga BIGINT UNSIGNED NOT NULL,
+  datum_od DATE NOT NULL, 
+  datum_do DATE NOT NULL DEFAULT '9999-12-31', 
+  iznos DECIMAL(18,2) NOT NULL,
+  valuta CHAR(3) NOT NULL DEFAULT 'EUR', 
+  porezna_stopa DECIMAL(5,2) NOT NULL DEFAULT 0, 
+  napomena VARCHAR(500) NOT NULL DEFAULT '-', 
+ vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_cijena_usluge),
+  KEY idx_cijena_usluge_usluga_id (id_usluga),
+  CONSTRAINT fk_cijena_usluge_usluga
+    FOREIGN KEY (id_usluga) REFERENCES usluga (id_usluga)
     ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
--- Tablica: referral -> uputnice/zahtjevi
-CREATE TABLE referral (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, -- Jedinstveni identifikator uputnice (PK)
-  patient_id BIGINT UNSIGNED NOT NULL, -- Pacijent na kojeg se uputnica odnosi (FK -> patient.id)
-  referral_number VARCHAR(100) NOT NULL, -- Broj uputnice
-  referral_date DATE NOT NULL, -- Datum uputnice
-  description VARCHAR(1000) NOT NULL DEFAULT '-', -- Opis razloga uputnice
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
-  PRIMARY KEY (id),
-  KEY idx_referral_patient_id (patient_id),
-  CONSTRAINT fk_referral_patient
-    FOREIGN KEY (patient_id) REFERENCES patient (id)
+CREATE TABLE uputnica (
+  id_uputnica BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  id_pacijent BIGINT UNSIGNED NOT NULL,
+  broj_uputnice VARCHAR(100) NOT NULL,
+  datum_uputnice DATE NOT NULL, 
+  opis VARCHAR(1000) NOT NULL DEFAULT '-', 
+ vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_uputnica),
+  KEY idx_uputnica_pacijent_id (id_pacijent),
+  CONSTRAINT fk_uputnica_pacijent
+    FOREIGN KEY (id_pacijent) REFERENCES pacijent (id_pacijent)
     ON DELETE CASCADE
 ) ;
 
 
--- Tablica: appointment_status -> statusi termina
-CREATE TABLE appointment_status (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, -- Jedinstveni identifikator statusa termina (PK)
-  code VARCHAR(20) NOT NULL, -- Kod statusa termina
-  name VARCHAR(100) NOT NULL, -- Naziv statusa termina
-  description VARCHAR(500) NOT NULL DEFAULT '-', -- Opis statusa termina
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
-  PRIMARY KEY (id),
-  UNIQUE KEY uq_appointment_status_code (code),
-  KEY idx_appointment_status_code (code)
+CREATE TABLE sifarnik_statusa_termina (
+  id_status_termina BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  sifra VARCHAR(20) NOT NULL, 
+  naziv VARCHAR(100) NOT NULL,
+  opis VARCHAR(500) NOT NULL DEFAULT '-', 
+ vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_status_termina),
+  UNIQUE KEY uq_status_termina (sifra),
+  KEY idx_sifarnik_status_termina (sifra)
 );
 
--- Tablica: employee_schedule -> raspored djelatnika
-CREATE TABLE employee_schedule (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, -- Jedinstveni identifikator rasporeda (PK)
-  employee_id BIGINT UNSIGNED NOT NULL, -- Djelatnik u rasporedu (FK -> employee.id)
-  schedule_date DATE NOT NULL, -- Datum rasporeda
-  time_from TIME NOT NULL, -- Vrijeme pocetka dostupnosti
-  time_to TIME NOT NULL, -- Vrijeme kraja dostupnosti
-  note VARCHAR(500) NOT NULL DEFAULT '-', -- Napomena uz raspored
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Vrijeme kreiranja zapisa
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Vrijeme zadnje izmjene zapisa
-  PRIMARY KEY (id),
-  KEY idx_employee_schedule_employee_id (employee_id),
-  KEY idx_employee_schedule_date (schedule_date),
-  CONSTRAINT chk_employee_schedule_time_range CHECK (time_from <= time_to),
+CREATE TABLE raspored_djelatnika (
+  id_raspored_djelatnika BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, 
+  id_djelatnik BIGINT UNSIGNED NOT NULL, 
+  datum DATE NOT NULL, 
+  vrijeme_od TIME NOT NULL, 
+  vrijeme_do TIME NOT NULL, 
+  biljeska VARCHAR(500) NOT NULL DEFAULT '-', 
+ vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_raspored_djelatnika),
+  KEY idx_raspored_djelatnika_zaposlenik (id_djelatnik),
+  KEY idx_raspored_djelatnik_datum (datum),
+  CONSTRAINT chk_raspored_djelatnik_vremenski_raspon CHECK (vrijeme_od <= vrijeme_do),
   CONSTRAINT fk_employee_schedule_employee
-    FOREIGN KEY (employee_id) REFERENCES employee (id)
+    FOREIGN KEY (id_djelatnik) REFERENCES djelatnik (id_djelatnik)
     ON DELETE RESTRICT
 ) ;
 
