@@ -24,7 +24,7 @@ CREATE TABLE pacijent (
   INDEX idx_oib_pacijenta (oib),
   UNIQUE KEY uq_mbo_pacijenta (mbo),
   INDEX idx_mbo_pacijenta (mbo),
-  CONSTRAINT chk_spol_pacijenta CHECK (spol IN ('m', 'ž', 'o'))
+  CONSTRAINT chk_spol_pacijenta CHECK (spol IN ('m', 'z', 'o'))
 );
 
 CREATE TABLE odjel (
@@ -48,10 +48,10 @@ CREATE TABLE ordinacija (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_ordinacija),
-  UNIQUE KEY uq_sifra_ureda (sifra),
-  KEY idx_sifra_ureda (sifra),
-  KEY idx_ured_odjel (id_odjel),
-  CONSTRAINT fk_ured_odjel
+  UNIQUE KEY uq_sifra_ordinacije (sifra),
+  KEY idx_sifra_ordinacije (sifra),
+  KEY idx_ordinacija_odjel (id_odjel),
+  CONSTRAINT fk_ordinacija_odjel
     FOREIGN KEY (id_odjel) REFERENCES odjel (id_odjel)
      ON DELETE RESTRICT
 ) ;
@@ -210,7 +210,7 @@ CREATE TABLE termin_pacijenta (
   id_zaposlenik BIGINT UNSIGNED NOT NULL,
   id_status_termina BIGINT UNSIGNED NOT NULL,
   vrijeme_odrzavanja DATETIME NOT NULL,
-  procjenjeno_trajanje_pregleda_minute INT NOT NULL DEFAULT 0,
+  procijenjeno_trajanje_pregleda_minute INT NOT NULL DEFAULT 0,
   razlog_dolaska VARCHAR(1000) NOT NULL DEFAULT '-',
   razlog_otkazivanja VARCHAR(1000) NOT NULL DEFAULT '-',
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -220,7 +220,7 @@ CREATE TABLE termin_pacijenta (
   KEY idx_termin_pacijenta_uputnica_id (id_uputnica),
   KEY idx_termin_pacijenta_zaposlenik_id (id_zaposlenik),
   KEY idx_termin_pacijenta_status_id (id_status_termina),
-  CONSTRAINT fk__termin_pacijenta_pacijent
+  CONSTRAINT fk_termin_pacijenta_pacijent
     FOREIGN KEY (id_pacijent) REFERENCES pacijent (id_pacijent)
     ON DELETE RESTRICT,
   CONSTRAINT fk_termin_pacijenta_uputnica
