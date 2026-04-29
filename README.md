@@ -63,7 +63,7 @@ Skripta:
 
 U lijevom panelu: desni klik na `Databases` -> `Refresh` (F5).
 
-Trebas vidjeti bazu `poliklinika` s ovih 30 tablica:
+Trebas vidjeti bazu `poliklinika` s ovih 25 tablica:
 
 ```
 pacijent
@@ -71,32 +71,35 @@ odjel
 ordinacija
 specijalizacija
 zaposlenik
-sifarnik_usluga
 usluga
 cijena_usluge
 uputnica
-sifarnik_statusa_termina
 raspored_djelatnika
 termin_pacijenta
-status_pregleda
 pregled
 pregled_usluga
 dijagnoza
 pregled_dijagnoza
 tip_nalaza
-status_nalaza
 nalaz
 laboratorijski_parametar
 laboratorijski_rezultat
 terapija
 preporuceni_lijek
-privitak_pregleda
 nacin_placanja
-status_racuna
 racun
 stavka_racuna
 uplata
+privitak
 ```
+
+> Napomena: ranija verzija sheme imala je 30 tablica. Pet tablica je
+> uklonjeno tijekom refaktoringa (`sifarnik_usluga`, `sifarnik_statusa_termina`,
+> `status_pregleda`, `status_nalaza`, `status_racuna`) - statusi se sada
+> prate stupcem `status` + CHECK constraintom u relevantnim tablicama, a
+> hijerarhija usluga nije potrebna. Tablica `privitak_pregleda` zamijenjena
+> je opcom tablicom `privitak` koja se moze vezati na pregled, nalaz,
+> uputnicu ili racun.
 
 ---
 

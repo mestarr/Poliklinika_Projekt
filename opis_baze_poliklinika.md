@@ -34,49 +34,46 @@ Tablice `department` i `office` opisuju unutarnju organizaciju poliklinike. `dep
 
 ## 3.3. Zaposlenici i specijalizacije
 
-Tablica `specialization` služi kao šifrarnik specijalizacija, dok tablica `employee` sadrži podatke o zaposlenicima. Svaki zaposlenik pripada određenoj specijalizaciji, odjelu i ordinaciji. Time se može pratiti tko radi u kojem dijelu poliklinike i koja je njegova stručna uloga u sustavu. Uz to, `employee_schedule` omogućuje vođenje rasporeda rada po datumima i vremenskim intervalima. 
+Tablica `specialization` služi kao šifrarnik specijalizacija, dok tablica `employee` sadrži podatke o zaposlenicima. Svaki zaposlenik pripada određenoj specijalizaciji i jednoj ordinaciji; pripadajući odjel se dohvaća **preko ordinacije** (ordinacija → odjel), pa zaposlenik više ne nosi izravnu vezu na odjel. Time se izbjegla redundancija i mogućnost da odjel zaposlenika "razmigra" u odnosu na odjel ordinacije. Uz to, `employee_schedule` omogućuje vođenje rasporeda rada po datumima i vremenskim intervalima.
 
 ## 3.4. Usluge i cjenik
 
-Tablice `service_category`, `service` i `service_price` služe za definiranje usluga koje poliklinika pruža. Usluge su grupirane po kategorijama, povezane su s odjelima i imaju trajanje. Cijene usluga vode se kroz posebnu tablicu `service_price`, što omogućuje praćenje promjena cijena kroz vrijeme. 
+Tablice `service` i `service_price` služe za definiranje usluga koje poliklinika pruža. Svaka usluga pripada nekom odjelu i ima predviđeno trajanje. Cijene usluga vode se kroz posebnu tablicu `service_price`, što omogućuje praćenje promjena cijena kroz vrijeme. Ranija tablica `service_category` je uklonjena – hijerarhija usluga nije bila potrebna jer u praksi nema značajnih takvih grupiranja.
 
 ## 3.5. Uputnice i termini
 
-Tablica `referral` služi za evidenciju uputnica, a `appointment` za naručivanje pacijenata na termin. Termin je povezan s pacijentom, eventualnom uputnicom, zaposlenikom i statusom termina. Time se može pratiti kada je pacijent naručen, kod kojeg djelatnika i u kojem je statusu termin. Za statuse termina koristi se poseban šifrarnik `appointment_status`.
+Tablica `referral` služi za evidenciju uputnica, a `appointment` za naručivanje pacijenata na termin. Termin je povezan s pacijentom, eventualnom uputnicom, zaposlenikom, **konkretnom uslugom za koju se pacijent naručuje** i **ordinacijom u kojoj se termin održava** – time je termin samostalno informativan i neovisan o naknadnom dohvaćanju usluge/ordinacije preko zaposlenika. Status termina prati se stupcem `status` (vrijednosti `najavljen`, `odrzan`, `otkazan`, `nije_odrzan`) izravno na termin retku, bez zasebnog šifrarnika.
 
 ## 3.6. Pregledi i dijagnoze
 
-Nakon termina slijedi pregled, koji se vodi u tablici `examination`. Pregled je povezan s terminom, pacijentom, djelatnikom i statusom pregleda. U njemu se čuvaju anamneza i zaključak pregleda. 
+Nakon termina slijedi pregled, koji se vodi u tablici `examination`. Pregled je povezan s terminom (preko kojeg se dohvaća pacijent) i sa zaposlenikom koji je pregled stvarno obavio – `id_zaposlenik` se u pregledu zadržava jer pregled može obaviti drugi liječnik od onoga planiranog u terminu (čime se čuva stvarno stanje pregleda). Pacijent se više ne duplicira na pregledu. Status pregleda prati se stupcem `status` (`u_tijeku`, `zavrsen`, `storniran`).
 
-Dijagnoze su organizirane kroz tablicu `diagnosis`, a budući da jedan pregled može imati više dijagnoza, koristi se povezna tablica `examination_diagnosis`. Na taj način model podržava odnos više-prema-više između pregleda i dijagnoza. Tablica `examination_service` dodatno omogućuje evidentiranje stvarno obavljenih usluga tijekom pregleda. 
+Dijagnoze su organizirane kroz tablicu `diagnosis`, a budući da jedan pregled može imati više dijagnoza, koristi se povezna tablica `examination_diagnosis`. Tablica `examination_service` ostaje **izvor istine za stvarno obavljene usluge** tijekom pregleda – iz nje proizlaze i kasnije stavke računa.
 
 ## 3.7. Nalazi i laboratorijski rezultati
 
-Tablica `finding` služi za izdane nalaze. Nalaz je povezan s pacijentom, djelatnikom, vrstom nalaza, statusom nalaza i po potrebi s pregledom. Za vrste i statuse nalaza koriste se tablice `finding_type` i `finding_status`. 
+Tablica `finding` služi za izdane nalaze. Nalaz je uvijek vezan na pacijenta i vrstu nalaza, a opcionalno na pregled (jer model podržava i nalaze koji nisu vezani uz pregled, npr. iz vanjskog laboratorija). Liječnik koji je nalaz izdao više se ne pohranjuje izravno u `finding` – dohvaća se preko pregleda kad pregled postoji. Status nalaza prati se stupcem `status` (`u_obradi`, `izdan`, `ponisten`).
 
-Ako je riječ o laboratorijskim nalazima, detalji rezultata vode se kroz `lab_parameter` i `lab_result`. Tako sustav može pratiti ne samo postojanje nalaza, nego i pojedinačne izmjerene laboratorijske vrijednosti, referentne granice i eventualna odstupanja. 
+Ako je riječ o laboratorijskim nalazima, detalji rezultata vode se kroz `lab_parameter` i `lab_result`.
 
 ## 3.8. Terapija i preporučeni lijekovi
 
-Tablica `therapy` služi za preporuke i terapiju nakon pregleda. Povezana je s pregledom, pacijentom, djelatnikom i po potrebi nalazom. U njoj se pohranjuju tekst preporuke, informacija treba li kontrola i datum eventualne kontrole. 
+Tablica `therapy` služi za preporuke i terapiju nakon pregleda. Povezana je sa svojim pregledom (obavezno) i po potrebi s nalazom. Pacijent i liječnik se više ne dupliciraju u `therapy` – oboje se dohvaća preko pripadajućeg pregleda.
 
-Ako terapija uključuje više lijekova ili pripravaka, oni se vode u tablici `recommended_medication`, gdje se za svaki lijek mogu navesti naziv, doziranje, upute i trajanje primjene. 
+Ako terapija uključuje više lijekova ili pripravaka, oni se vode u tablici `recommended_medication`.
 
-## 3.9. Privitci uz pregled
+## 3.9. Privitci
 
-Tablica `examination_attachment` omogućuje pohranu metapodataka o privicima vezanim uz pregled, primjerice PDF dokumentima, slikama, izvješćima ili drugim datotekama. Time model podržava i dokumentacijsku stranu rada poliklinike. 
+Tablica `attachment` omogućuje pohranu metapodataka o privicima (PDF, slike, izvješća…). Privitak se može vezati na **pregled, nalaz, uputnicu ili račun** – točno jedan vlasnik mora biti postavljen po retku, što je osigurano `CHECK` ograničenjem. Time se izbjeglo množenje specijaliziranih tablica privitaka po entitetu.
 
 ## 3.10. Računi i naplata
 
-Financijski dio modela sastoji se od tablica `payment_method`, `invoice_status`, `invoice`, `invoice_item` i `payment`. 
+Financijski dio modela sastoji se od tablica `payment_method`, `invoice`, `invoice_item` i `payment`.
 
-- `invoice` predstavlja zaglavlje računa
-- `invoice_item` sadrži pojedine stavke računa
+- `invoice` predstavlja zaglavlje računa; status računa prati se stupcem `status` (`izdan`, `placen`, `storniran`, `dospio`)
+- `invoice_item` sadrži pojedine stavke računa i referencira `examination_service` (izvor istine za obavljenu uslugu); atributi cijene/popusta/poreza i dalje se kopiraju u stavku jer je izdani račun po zakonu **zamrznut** u trenutku izdavanja, neovisno o naknadnim promjenama pregleda
 - `payment` evidentira uplate po računima
-- `payment_method` definira načine plaćanja
-- `invoice_status` definira status računa.
-
-Ova cjelina omogućuje da se nakon obavljenih usluga pacijentu izda račun, da se na račun dodaju stavke usluga te da se evidentira jedna ili više uplata. 
+- `payment_method` definira načine plaćanja.
 
 ## 4. Osnovni tok podataka kroz sustav
 
@@ -98,15 +95,16 @@ Ovaj poslovni tok odgovara glavnim vezama između tablica `patient`, `referral`,
 
 Najvažnije logičke veze mogu se sažeti ovako:
 
-- jedan pacijent može imati više uputnica, termina, pregleda, nalaza, terapija i računa
-- jedan odjel može imati više ordinacija, zaposlenika i usluga
-- jedna ordinacija pripada jednom odjelu, ali u njoj može raditi više zaposlenika
-- jedan zaposlenik može imati više termina, pregleda, nalaza i preporuka
-- jedan termin pripada jednom pacijentu i jednom djelatniku, a može rezultirati jednim ili više pregleda, ovisno o poslovnim pravilima sustava
-- jedan pregled može imati više dijagnoza i više obavljenih usluga
-- jedan nalaz može imati više laboratorijskih rezultata
-- jedna terapija može imati više preporučenih lijekova
-- jedan račun može imati više stavki i više uplata.
+- jedan pacijent može imati više uputnica, termina, nalaza i računa (preglede, terapije i preporučene lijekove dohvaća se preko termina i pregleda)
+- jedan odjel može imati više ordinacija i usluga
+- jedna ordinacija pripada jednom odjelu, a u njoj može raditi više zaposlenika
+- jedan zaposlenik pripada jednoj ordinaciji i može imati više termina i pregleda
+- jedan termin pripada jednom pacijentu, jednom djelatniku, jednoj usluzi i jednoj ordinaciji, a može rezultirati pregledom
+- jedan pregled može imati više dijagnoza i više obavljenih usluga (`examination_service`)
+- jedan nalaz može imati više laboratorijskih rezultata; nalaz može (ali ne mora) biti vezan uz pregled
+- jedna terapija obavezno proizlazi iz jednog pregleda i može imati više preporučenih lijekova
+- jedan račun može imati više stavki i više uplata; stavke se vežu na obavljene usluge iz pregleda (`examination_service`)
+- privitak je vezan na točno jedan od entiteta: pregled, nalaz, uputnicu ili račun.
 
 Takve veze čine model dovoljno fleksibilnim za stvarni rad poliklinike, a istovremeno dovoljno strukturiranim za kasnije SQL upite, izvještavanje i nadogradnju sustava. 
 
