@@ -1,0 +1,22 @@
+id,examination_id,finding_id,referral_id,invoice_id,attachment_type,file_name,mime_type,size_bytes,file_path,note,created_at,updated_at
+1,1,,,,PDF,nalaz_001.pdf,application/pdf,120000,/data/attachments/nalaz_001.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,2,,,,PDF,nalaz_002.pdf,application/pdf,121500,/data/attachments/nalaz_002.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,3,,,,PDF,nalaz_003.pdf,application/pdf,123000,/data/attachments/nalaz_003.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,4,,,,PDF,nalaz_004.pdf,application/pdf,124500,/data/attachments/nalaz_004.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,5,,,,PDF,nalaz_005.pdf,application/pdf,126000,/data/attachments/nalaz_005.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,6,,,,PDF,nalaz_006.pdf,application/pdf,127500,/data/attachments/nalaz_006.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,7,,,,PDF,nalaz_007.pdf,application/pdf,129000,/data/attachments/nalaz_007.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,8,,,,PDF,nalaz_008.pdf,application/pdf,130500,/data/attachments/nalaz_008.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,9,,,,PDF,nalaz_009.pdf,application/pdf,132000,/data/attachments/nalaz_009.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,10,,,,PDF,nalaz_010.pdf,application/pdf,133500,/data/attachments/nalaz_010.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+id,examination_id,finding_id,referral_id,invoice_id,attachment_type,file_name,mime_type,size_bytes,file_path,note,created_at,updated_at
+1,1,,,,PDF,nalaz_001.pdf,application/pdf,120000,/data/attachments/nalaz_001.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+2,2,,,,PDF,nalaz_002.pdf,application/pdf,121500,/data/attachments/nalaz_002.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+3,3,,,,PDF,nalaz_003.pdf,application/pdf,123000,/data/attachments/nalaz_003.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+4,4,,,,PDF,nalaz_004.pdf,application/pdf,124500,/data/attachments/nalaz_004.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+5,5,,,,PDF,nalaz_005.pdf,application/pdf,126000,/data/attachments/nalaz_005.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+6,6,,,,PDF,nalaz_006.pdf,application/pdf,127500,/data/attachments/nalaz_006.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+7,7,,,,PDF,nalaz_007.pdf,application/pdf,129000,/data/attachments/nalaz_007.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+8,8,,,,PDF,nalaz_008.pdf,application/pdf,130500,/data/attachments/nalaz_008.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+9,9,,,,PDF,nalaz_009.pdf,application/pdf,132000,/data/attachments/nalaz_009.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
+10,10,,,,PDF,nalaz_010.pdf,application/pdf,133500,/data/attachments/nalaz_010.pdf,Potpisani dokument,2026-04-08 10:00:00,2026-04-08 10:00:00
