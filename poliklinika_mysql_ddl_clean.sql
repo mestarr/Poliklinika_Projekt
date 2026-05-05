@@ -3,27 +3,30 @@ CREATE DATABASE poliklinika;
 
 USE poliklinika;
 
+-- Model uskladen s akademskom kritikom: jedan izvor istine po koraku u glavnom toku
+-- (termin -> pregled -> pregled_usluga -> racun); termin s uslugom i ordinacijom;
+-- stavka_racuna vezana na pregled_usluga ili samo na uslugu; statusi u stupcu + CHECK;
+-- bez hijerarhije sifarnik_usluga; zaposlenik samo na ordinaciju (odjel preko nje);
+-- privitak opcenito (tocno jedan roditelj: pregled, nalaz, uputnica ili racun).
 
 CREATE TABLE pacijent (
   id_pacijent BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   oib CHAR(11) NOT NULL,
-  mbo VARCHAR(30) NOT NULL ,
+  mbo VARCHAR(30) NOT NULL,
   ime VARCHAR(100) NOT NULL,
   prezime VARCHAR(100) NOT NULL,
   spol CHAR(1) NOT NULL DEFAULT 'm',
   datum_rodjenja DATE NOT NULL,
-  broj_mobitela VARCHAR(50) NOT NULL ,
+  broj_mobitela VARCHAR(50) NOT NULL,
   email_adresa VARCHAR(100) NOT NULL,
   adresa_stanovanja VARCHAR(255) NOT NULL,
-  grad VARCHAR(100) NOT NULL ,
+  grad VARCHAR(100) NOT NULL,
   biljeska VARCHAR(1000) NOT NULL DEFAULT '-',
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_pacijent),
   UNIQUE KEY uq_oib_pacijenta (oib),
-  INDEX idx_oib_pacijenta (oib),
   UNIQUE KEY uq_mbo_pacijenta (mbo),
-  INDEX idx_mbo_pacijenta (mbo),
   CONSTRAINT chk_spol_pacijenta CHECK (spol IN ('m', 'ž', 'o'))
 );
 
@@ -35,8 +38,7 @@ CREATE TABLE odjel (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_odjel),
-  UNIQUE KEY uq_sifra_odjela (sifra),
-  KEY idx_sifra_odjela (sifra)
+  UNIQUE KEY uq_sifra_odjela (sifra)
 );
 
 CREATE TABLE ordinacija (
@@ -48,79 +50,53 @@ CREATE TABLE ordinacija (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_ordinacija),
-  UNIQUE KEY uq_sifra_ureda (sifra),
-  KEY idx_sifra_ureda (sifra),
-  KEY idx_ured_odjel (id_odjel),
-  CONSTRAINT fk_ured_odjel
+  UNIQUE KEY uq_sifra_ordinacije (sifra),
+  KEY idx_ordinacija_odjel (id_odjel),
+  CONSTRAINT fk_ordinacija_odjel
     FOREIGN KEY (id_odjel) REFERENCES odjel (id_odjel)
-     ON DELETE RESTRICT
-) ;
+    ON DELETE RESTRICT
+);
 
 CREATE TABLE specijalizacija (
   id_specijalizacija BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  sifra VARCHAR(50) NOT NULL UNIQUE,
+  sifra VARCHAR(50) NOT NULL,
   naziv VARCHAR(150) NOT NULL,
   opis VARCHAR(1000) DEFAULT '-',
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_specijalizacija),
-  UNIQUE KEY uq_sifra_specijalizacije (sifra),
-  KEY idx_sifra_specijalizacije (sifra)
+  UNIQUE KEY uq_sifra_specijalizacije (sifra)
 );
-
 
 CREATE TABLE zaposlenik (
   id_zaposlenik BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  sifra VARCHAR(50) NOT NULL UNIQUE,
+  sifra VARCHAR(50) NOT NULL,
   ime VARCHAR(100) NOT NULL,
   prezime VARCHAR(100) NOT NULL,
   email VARCHAR(100) DEFAULT '-',
   telefon VARCHAR(50) DEFAULT '-',
-  titula VARCHAR(100) DEFAULT 'liječnik',
+  titula VARCHAR(100) DEFAULT 'lijecnik',
   id_specijalizacija BIGINT UNSIGNED NOT NULL,
-  id_odjel BIGINT UNSIGNED NOT NULL,
   id_ordinacija BIGINT UNSIGNED NOT NULL,
   datum_zaposlenja DATE NOT NULL,
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_zaposlenik),
   UNIQUE KEY uq_sifra_zaposlenika (sifra),
-  KEY idx_zaposlenik_id_specijalizacija (id_specijalizacija),
-  KEY idx_zaposlenik_id_odjel (id_odjel),
-  KEY idx_zaposlenik_ordinacija_id (id_ordinacija),
+  KEY idx_zaposlenik_specijalizacija (id_specijalizacija),
+  KEY idx_zaposlenik_ordinacija (id_ordinacija),
   CONSTRAINT fk_zaposlenik_specijalizacija
     FOREIGN KEY (id_specijalizacija) REFERENCES specijalizacija (id_specijalizacija)
     ON DELETE RESTRICT,
-  CONSTRAINT fk_zaposlenik_odjel
-    FOREIGN KEY (id_odjel) REFERENCES odjel (id_odjel)
-    ON  DELETE RESTRICT,
   CONSTRAINT fk_zaposlenik_ordinacija
     FOREIGN KEY (id_ordinacija) REFERENCES ordinacija (id_ordinacija)
-    ON  DELETE RESTRICT
-);
-
-
-CREATE TABLE sifarnik_usluga (
-  id_sifarnik_usluga BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  sifra VARCHAR(50) NOT NULL,
-  naziv VARCHAR(100) NOT NULL,
-  id_parent_sifarnik_usluga BIGINT UNSIGNED NULL DEFAULT NULL,
-  opis VARCHAR(500) NOT NULL DEFAULT '-',
-  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id_sifarnik_usluga),
-  UNIQUE KEY uq_sifra_sifarnika_usluga (sifra),
-  KEY idx_sifra_sifarnika_usluga (sifra),
-  CONSTRAINT fk_parent_sifarnik_usluga
-    FOREIGN KEY (id_parent_sifarnik_usluga) REFERENCES sifarnik_usluga (id_sifarnik_usluga)
-    ON DELETE CASCADE
+    ON DELETE RESTRICT
 );
 
 CREATE TABLE usluga (
   id_usluga BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   sifra VARCHAR(50) NOT NULL,
   naziv VARCHAR(200) NOT NULL,
-  id_sifarnik_usluga BIGINT UNSIGNED NOT NULL,
   id_odjel BIGINT UNSIGNED NOT NULL,
   opis VARCHAR(2000) NOT NULL DEFAULT '-',
   trajanje_pregleda_minute INT NOT NULL DEFAULT 0,
@@ -128,12 +104,7 @@ CREATE TABLE usluga (
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_usluga),
   UNIQUE KEY uq_sifra_usluge (sifra),
-  KEY idx_sifra_usluge (sifra),
-  KEY idx_sifarnik_usluga_id (id_sifarnik_usluga),
-  KEY idx_odjel_id (id_odjel),
-  CONSTRAINT fk_sifarnik_usluga
-    FOREIGN KEY (id_sifarnik_usluga) REFERENCES sifarnik_usluga (id_sifarnik_usluga)
-     ON DELETE RESTRICT,
+  KEY idx_usluga_odjel (id_odjel),
   CONSTRAINT fk_usluga_odjel
     FOREIGN KEY (id_odjel) REFERENCES odjel (id_odjel)
     ON DELETE RESTRICT
@@ -151,10 +122,10 @@ CREATE TABLE cijena_usluge (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_cijena_usluge),
-  KEY idx_cijena_usluge_usluga_id (id_usluga),
+  KEY idx_cijena_usluge_usluga (id_usluga),
   CONSTRAINT fk_cijena_usluge_usluga
     FOREIGN KEY (id_usluga) REFERENCES usluga (id_usluga)
-     ON DELETE RESTRICT
+    ON DELETE RESTRICT
 );
 
 CREATE TABLE uputnica (
@@ -166,23 +137,10 @@ CREATE TABLE uputnica (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_uputnica),
-  KEY idx_uputnica_pacijent_id (id_pacijent),
+  KEY idx_uputnica_pacijent (id_pacijent),
   CONSTRAINT fk_uputnica_pacijent
     FOREIGN KEY (id_pacijent) REFERENCES pacijent (id_pacijent)
     ON DELETE CASCADE
-) ;
-
-
-CREATE TABLE sifarnik_statusa_termina (
-  id_status_termina BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  sifra VARCHAR(20) NOT NULL,
-  naziv VARCHAR(100) NOT NULL,
-  opis VARCHAR(500) NOT NULL DEFAULT '-',
-  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id_status_termina),
-  UNIQUE KEY uq_status_termina (sifra),
-  KEY idx_sifarnik_status_termina (sifra)
 );
 
 CREATE TABLE raspored_djelatnika (
@@ -201,14 +159,16 @@ CREATE TABLE raspored_djelatnika (
   CONSTRAINT fk_raspored_djelatnika_djelatnik
     FOREIGN KEY (id_djelatnik) REFERENCES zaposlenik (id_zaposlenik)
     ON DELETE RESTRICT
-) ;
+);
 
 CREATE TABLE termin_pacijenta (
   id_termin_pacijenta BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   id_pacijent BIGINT UNSIGNED NOT NULL,
   id_uputnica BIGINT UNSIGNED NULL,
   id_zaposlenik BIGINT UNSIGNED NOT NULL,
-  id_status_termina BIGINT UNSIGNED NOT NULL,
+  id_usluga BIGINT UNSIGNED NOT NULL,
+  id_ordinacija BIGINT UNSIGNED NOT NULL,
+  status_termina VARCHAR(30) NOT NULL DEFAULT 'ZAKAZAN',
   vrijeme_odrzavanja DATETIME NOT NULL,
   procjenjeno_trajanje_pregleda_minute INT NOT NULL DEFAULT 0,
   razlog_dolaska VARCHAR(1000) NOT NULL DEFAULT '-',
@@ -216,65 +176,53 @@ CREATE TABLE termin_pacijenta (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_termin_pacijenta),
-  KEY idx_termin_pacijenta_pacijent_id (id_pacijent),
-  KEY idx_termin_pacijenta_uputnica_id (id_uputnica),
-  KEY idx_termin_pacijenta_zaposlenik_id (id_zaposlenik),
-  KEY idx_termin_pacijenta_status_id (id_status_termina),
-  CONSTRAINT fk__termin_pacijenta_pacijent
+  KEY idx_termin_pacijenta_pacijent (id_pacijent),
+  KEY idx_termin_pacijenta_uputnica (id_uputnica),
+  KEY idx_termin_pacijenta_zaposlenik (id_zaposlenik),
+  KEY idx_termin_pacijenta_usluga (id_usluga),
+  KEY idx_termin_pacijenta_ordinacija (id_ordinacija),
+  CONSTRAINT chk_status_termina CHECK (status_termina IN (
+    'ZAKAZAN', 'OTKAZAN', 'DOLAZAK', 'NEMA_DOLASKA', 'ZAVRSEN'
+  )),
+  CONSTRAINT fk_termin_pacijenta_pacijent
     FOREIGN KEY (id_pacijent) REFERENCES pacijent (id_pacijent)
     ON DELETE RESTRICT,
   CONSTRAINT fk_termin_pacijenta_uputnica
     FOREIGN KEY (id_uputnica) REFERENCES uputnica (id_uputnica)
-     ON DELETE RESTRICT,
+    ON DELETE RESTRICT,
   CONSTRAINT fk_termin_pacijenta_zaposlenik
     FOREIGN KEY (id_zaposlenik) REFERENCES zaposlenik (id_zaposlenik)
-     ON DELETE RESTRICT,
-  CONSTRAINT fk_termin_pacijenta_status
-    FOREIGN KEY (id_status_termina) REFERENCES sifarnik_statusa_termina (id_status_termina)
-     ON DELETE RESTRICT
-) ;
-
-
-
-CREATE TABLE status_pregleda (
-  id_status_pregleda BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  sifra VARCHAR(20) NOT NULL,
-  naziv VARCHAR(100) NOT NULL,
-  opis VARCHAR(500) NOT NULL DEFAULT '-',
-  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id_status_pregleda),
-  UNIQUE KEY uq_status_pregleda_sifra (sifra)
+    ON DELETE RESTRICT,
+  CONSTRAINT fk_termin_pacijenta_usluga
+    FOREIGN KEY (id_usluga) REFERENCES usluga (id_usluga)
+    ON DELETE RESTRICT,
+  CONSTRAINT fk_termin_pacijenta_ordinacija
+    FOREIGN KEY (id_ordinacija) REFERENCES ordinacija (id_ordinacija)
+    ON DELETE RESTRICT
 );
+
 CREATE TABLE pregled (
   id_pregled BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   id_termin_pacijenta BIGINT UNSIGNED NOT NULL,
-  id_pacijent BIGINT UNSIGNED NOT NULL,
-  id_zaposlenik BIGINT UNSIGNED NOT NULL,
-  id_status_pregleda BIGINT UNSIGNED NOT NULL,
+  id_zaposlenik_obavljen BIGINT UNSIGNED NULL DEFAULT NULL,
+  status_pregleda VARCHAR(30) NOT NULL DEFAULT 'OTVOREN',
   vrijeme_odrzavanja_pregleda DATETIME NOT NULL,
   anamneza TEXT NOT NULL,
   zakljucak TEXT NOT NULL,
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_pregled),
-  KEY idx_pregled_termin_id (id_termin_pacijenta),
-  KEY idx_pregled_pacijent_id (id_pacijent),
-  KEY idx_pregled_zaposlenik_id (id_zaposlenik),
-  KEY idx_pregled_status_id (id_status_pregleda),
+  KEY idx_pregled_termin (id_termin_pacijenta),
+  KEY idx_pregled_zaposlenik_obavljen (id_zaposlenik_obavljen),
+  CONSTRAINT chk_status_pregleda CHECK (status_pregleda IN ('OTVOREN', 'ZAVRSEN', 'STORNO')),
   CONSTRAINT fk_pregled_termin
     FOREIGN KEY (id_termin_pacijenta) REFERENCES termin_pacijenta (id_termin_pacijenta)
     ON DELETE RESTRICT,
-  CONSTRAINT fk_pregled_pacijent
-    FOREIGN KEY (id_pacijent) REFERENCES pacijent (id_pacijent)
-     ON DELETE RESTRICT,
-  CONSTRAINT fk_pregled_zaposlenik
-    FOREIGN KEY (id_zaposlenik) REFERENCES zaposlenik (id_zaposlenik)
-     ON DELETE RESTRICT,
-  CONSTRAINT fk_pregled_status
-    FOREIGN KEY (id_status_pregleda) REFERENCES status_pregleda (id_status_pregleda)
-     ON DELETE RESTRICT
+  CONSTRAINT fk_pregled_zaposlenik_obavljen
+    FOREIGN KEY (id_zaposlenik_obavljen) REFERENCES zaposlenik (id_zaposlenik)
+    ON DELETE RESTRICT
 );
+
 CREATE TABLE pregled_usluga (
   id_pregled_usluga BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   id_pregled BIGINT UNSIGNED NOT NULL,
@@ -287,14 +235,14 @@ CREATE TABLE pregled_usluga (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_pregled_usluga),
-  KEY idx_pregled_usluga_pregled_id (id_pregled),
-  KEY idx_pregled_usluga_usluga_id (id_usluga),
+  KEY idx_pregled_usluga_pregled (id_pregled),
+  KEY idx_pregled_usluga_usluga (id_usluga),
   CONSTRAINT fk_pregled_usluga_pregled
     FOREIGN KEY (id_pregled) REFERENCES pregled (id_pregled)
     ON DELETE RESTRICT,
   CONSTRAINT fk_pregled_usluga_usluga
     FOREIGN KEY (id_usluga) REFERENCES usluga (id_usluga)
-     ON DELETE RESTRICT
+    ON DELETE RESTRICT
 );
 
 CREATE TABLE dijagnoza (
@@ -306,7 +254,8 @@ CREATE TABLE dijagnoza (
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_dijagnoza),
   UNIQUE KEY uq_dijagnoza_sifra (sifra)
-) ;
+);
+
 CREATE TABLE pregled_dijagnoza (
   id_pregled_dijagnoza BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   id_pregled BIGINT UNSIGNED NOT NULL,
@@ -315,15 +264,16 @@ CREATE TABLE pregled_dijagnoza (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_pregled_dijagnoza),
-  KEY idx_pregled_dijagnoza_pregled_id (id_pregled),
-  KEY idx_pregled_dijagnoza_dijagnoza_id (id_dijagnoza),
+  KEY idx_pregled_dijagnoza_pregled (id_pregled),
+  KEY idx_pregled_dijagnoza_dijagnoza (id_dijagnoza),
   CONSTRAINT fk_pregled_dijagnoza_pregled
     FOREIGN KEY (id_pregled) REFERENCES pregled (id_pregled)
     ON DELETE RESTRICT,
   CONSTRAINT fk_pregled_dijagnoza_dijagnoza
     FOREIGN KEY (id_dijagnoza) REFERENCES dijagnoza (id_dijagnoza)
     ON DELETE RESTRICT
-) ;
+);
+
 CREATE TABLE tip_nalaza (
   id_tip_nalaza BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   sifra VARCHAR(20) NOT NULL,
@@ -334,46 +284,46 @@ CREATE TABLE tip_nalaza (
   PRIMARY KEY (id_tip_nalaza),
   UNIQUE KEY uq_tip_nalaza_sifra (sifra)
 );
-CREATE TABLE status_nalaza (
-  id_status_nalaza BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  sifra VARCHAR(20) NOT NULL,
-  naziv VARCHAR(100) NOT NULL,
-  opis VARCHAR(500) NOT NULL DEFAULT '-',
-  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id_status_nalaza),
-  UNIQUE KEY uq_status_nalaza_sifra (sifra)
-);
+
 CREATE TABLE nalaz (
   id_nalaz BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  id_pacijent BIGINT UNSIGNED NOT NULL,
-  id_zaposlenik BIGINT UNSIGNED NOT NULL,
+  id_pregled BIGINT UNSIGNED NULL DEFAULT NULL,
+  id_pacijent BIGINT UNSIGNED NULL DEFAULT NULL,
+  id_zaposlenik BIGINT UNSIGNED NULL DEFAULT NULL,
   id_tip_nalaza BIGINT UNSIGNED NOT NULL,
-  id_status_nalaza BIGINT UNSIGNED NOT NULL,
-  id_pregled BIGINT UNSIGNED NULL,
+  status_nalaza VARCHAR(30) NOT NULL DEFAULT 'NACRT',
   izdano_u DATETIME NOT NULL,
   sazetak VARCHAR(1000) NOT NULL DEFAULT '-',
   napomena TEXT NOT NULL DEFAULT '-',
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_nalaz),
-  KEY idx_nalaz_pacijent_id (id_pacijent),
-  KEY idx_nalaz_tip_id (id_tip_nalaza),
-  KEY idx_nalaz_status_id (id_status_nalaza),
-  KEY idx_nalaz_pregled_id (id_pregled),
+  KEY idx_nalaz_pacijent (id_pacijent),
+  KEY idx_nalaz_tip (id_tip_nalaza),
+  KEY idx_nalaz_pregled (id_pregled),
+  KEY idx_nalaz_zaposlenik (id_zaposlenik),
+  CONSTRAINT chk_status_nalaza CHECK (status_nalaza IN (
+    'NACRT', 'UPISAN', 'VERIFIKACIJA', 'IZDAN', 'STORNO'
+  )),
+  CONSTRAINT chk_nalaz_pregled_ili_samostalan CHECK (
+    (id_pregled IS NOT NULL AND id_pacijent IS NULL AND id_zaposlenik IS NULL)
+    OR
+    (id_pregled IS NULL AND id_pacijent IS NOT NULL AND id_zaposlenik IS NOT NULL)
+  ),
   CONSTRAINT fk_nalaz_pacijent
     FOREIGN KEY (id_pacijent) REFERENCES pacijent (id_pacijent)
     ON DELETE CASCADE,
   CONSTRAINT fk_nalaz_tip
     FOREIGN KEY (id_tip_nalaza) REFERENCES tip_nalaza (id_tip_nalaza)
     ON DELETE RESTRICT,
-  CONSTRAINT fk_nalaz_status
-    FOREIGN KEY (id_status_nalaza) REFERENCES status_nalaza (id_status_nalaza)
-     ON DELETE RESTRICT,
   CONSTRAINT fk_nalaz_pregled
     FOREIGN KEY (id_pregled) REFERENCES pregled (id_pregled)
+    ON DELETE RESTRICT,
+  CONSTRAINT fk_nalaz_zaposlenik
+    FOREIGN KEY (id_zaposlenik) REFERENCES zaposlenik (id_zaposlenik)
     ON DELETE RESTRICT
 );
+
 CREATE TABLE laboratorijski_parametar (
   id_laboratorijski_parametar BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   sifra VARCHAR(20) NOT NULL,
@@ -383,9 +333,9 @@ CREATE TABLE laboratorijski_parametar (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_laboratorijski_parametar),
-  UNIQUE KEY uq_laboratorijski_parametar_sifra (sifra),
-  KEY idx_laboratorijski_parametar_sifra (sifra)
+  UNIQUE KEY uq_laboratorijski_parametar_sifra (sifra)
 );
+
 CREATE TABLE laboratorijski_rezultat (
   id_laboratorijski_rezultat BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   id_nalaz BIGINT UNSIGNED NOT NULL,
@@ -401,8 +351,8 @@ CREATE TABLE laboratorijski_rezultat (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_laboratorijski_rezultat),
-  KEY idx_laboratorijski_rezultat_nalaz_id (id_nalaz),
-  KEY idx_laboratorijski_rezultat_parametar_id (id_laboratorijski_parametar),
+  KEY idx_laboratorijski_rezultat_nalaz (id_nalaz),
+  KEY idx_laboratorijski_rezultat_parametar (id_laboratorijski_parametar),
   CONSTRAINT fk_laboratorijski_rezultat_nalaz
     FOREIGN KEY (id_nalaz) REFERENCES nalaz (id_nalaz)
     ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -410,11 +360,10 @@ CREATE TABLE laboratorijski_rezultat (
     FOREIGN KEY (id_laboratorijski_parametar) REFERENCES laboratorijski_parametar (id_laboratorijski_parametar)
     ON UPDATE CASCADE ON DELETE RESTRICT
 );
+
 CREATE TABLE terapija (
   id_terapija BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   id_pregled BIGINT UNSIGNED NOT NULL,
-  id_pacijent BIGINT UNSIGNED NOT NULL,
-  id_zaposlenik BIGINT UNSIGNED NOT NULL,
   id_nalaz BIGINT UNSIGNED NULL,
   preporuceno_u DATETIME NOT NULL,
   tekst_preporuke TEXT NOT NULL,
@@ -424,23 +373,16 @@ CREATE TABLE terapija (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_terapija),
-  KEY idx_terapija_pregled_id (id_pregled),
-  KEY idx_terapija_pacijent_id (id_pacijent),
-  KEY idx_terapija_zaposlenik_id (id_zaposlenik),
-  KEY idx_terapija_nalaz_id (id_nalaz),
+  KEY idx_terapija_pregled (id_pregled),
+  KEY idx_terapija_nalaz (id_nalaz),
   CONSTRAINT fk_terapija_pregled
     FOREIGN KEY (id_pregled) REFERENCES pregled (id_pregled)
-    ON  DELETE RESTRICT,
-  CONSTRAINT fk_terapija_pacijent
-    FOREIGN KEY (id_pacijent) REFERENCES pacijent (id_pacijent)
-    ON DELETE CASCADE,
-  CONSTRAINT fk_terapija_zaposlenik
-    FOREIGN KEY (id_zaposlenik) REFERENCES zaposlenik (id_zaposlenik)
     ON DELETE RESTRICT,
   CONSTRAINT fk_terapija_nalaz
     FOREIGN KEY (id_nalaz) REFERENCES nalaz (id_nalaz)
     ON DELETE RESTRICT
-) ;
+);
+
 CREATE TABLE preporuceni_lijek (
   id_preporuceni_lijek BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   id_terapija BIGINT UNSIGNED NOT NULL,
@@ -452,55 +394,28 @@ CREATE TABLE preporuceni_lijek (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_preporuceni_lijek),
-  KEY idx_preporuceni_lijek_terapija_id (id_terapija),
+  KEY idx_preporuceni_lijek_terapija (id_terapija),
   CONSTRAINT fk_preporuceni_lijek_terapija
     FOREIGN KEY (id_terapija) REFERENCES terapija (id_terapija)
     ON DELETE RESTRICT
-) ;
-CREATE TABLE privitak_pregleda (
-  id_privitak_pregleda BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  id_pregled BIGINT UNSIGNED NOT NULL,
-  tip_privitka VARCHAR(30) NOT NULL DEFAULT 'PDF',
-  naziv_datoteke VARCHAR(255) NOT NULL,
-  mime_tip VARCHAR(100) NOT NULL DEFAULT '-',
-  velicina_u_bajtovima BIGINT NOT NULL DEFAULT 0,
-  putanja_datoteke VARCHAR(500) NOT NULL,
-  napomena VARCHAR(500) NOT NULL DEFAULT '-',
-  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id_privitak_pregleda),
-  KEY idx_privitak_pregleda_pregled_id (id_pregled),
-  CONSTRAINT fk_privitak_pregleda_pregled
-    FOREIGN KEY (id_pregled) REFERENCES pregled (id_pregled)
-    ON DELETE CASCADE
 );
 
 CREATE TABLE nacin_placanja (
   id_nacin_placanja BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  sifra VARCHAR(50) NOT NULL ,
+  sifra VARCHAR(50) NOT NULL,
   naziv VARCHAR(100) NOT NULL,
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_nacin_placanja),
-  UNIQUE KEY uq_nacin_placanja_sifra (sifra),
-  KEY idx_nacin_placanja_sifra (sifra)
+  UNIQUE KEY uq_nacin_placanja_sifra (sifra)
 );
-CREATE TABLE status_racuna (
-  id_status_racuna BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  sifra VARCHAR(20) NOT NULL,
-  naziv VARCHAR(100) NOT NULL,
-  opis VARCHAR(500) NOT NULL DEFAULT '-',
-  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id_status_racuna),
-  UNIQUE KEY uq_status_racuna_sifra (sifra)
-);
+
 CREATE TABLE racun (
   id_racun BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   broj_racuna VARCHAR(50) NOT NULL,
-  id_pacijent BIGINT UNSIGNED NOT NULL,
-  id_status_racuna BIGINT UNSIGNED NOT NULL,
-  id_pregled BIGINT UNSIGNED NULL,
+  id_pacijent BIGINT UNSIGNED NULL DEFAULT NULL,
+  id_pregled BIGINT UNSIGNED NULL DEFAULT NULL,
+  status_racuna VARCHAR(30) NOT NULL DEFAULT 'NACRT',
   datum_izdavanja DATE NOT NULL,
   datum_dospijeca DATE NULL,
   valuta CHAR(3) NOT NULL DEFAULT 'EUR',
@@ -513,24 +428,65 @@ CREATE TABLE racun (
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_racun),
   UNIQUE KEY uq_broj_racuna (broj_racuna),
-  KEY idx_racun_pacijent_id (id_pacijent),
-  KEY idx_racun_status_id (id_status_racuna),
-  KEY idx_racun_pregled_id (id_pregled),
+  KEY idx_racun_pacijent (id_pacijent),
+  KEY idx_racun_pregled (id_pregled),
+  CONSTRAINT chk_status_racuna CHECK (status_racuna IN ('NACRT', 'IZDAN', 'PLACEN', 'STORNO')),
+  CONSTRAINT chk_racun_pacijent_izvor CHECK (
+    (id_pregled IS NOT NULL AND id_pacijent IS NULL)
+    OR (id_pregled IS NULL AND id_pacijent IS NOT NULL)
+  ),
   CONSTRAINT fk_racun_pacijent
     FOREIGN KEY (id_pacijent) REFERENCES pacijent (id_pacijent)
-    ON DELETE RESTRICT,
-  CONSTRAINT fk_racun_status
-    FOREIGN KEY (id_status_racuna) REFERENCES status_racuna (id_status_racuna)
     ON DELETE RESTRICT,
   CONSTRAINT fk_racun_pregled
     FOREIGN KEY (id_pregled) REFERENCES pregled (id_pregled)
     ON DELETE RESTRICT
 );
 
+CREATE TABLE privitak (
+  id_privitak BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  id_pregled BIGINT UNSIGNED NULL DEFAULT NULL,
+  id_nalaz BIGINT UNSIGNED NULL DEFAULT NULL,
+  id_uputnica BIGINT UNSIGNED NULL DEFAULT NULL,
+  id_racun BIGINT UNSIGNED NULL DEFAULT NULL,
+  tip_privitka VARCHAR(30) NOT NULL DEFAULT 'PDF',
+  naziv_datoteke VARCHAR(255) NOT NULL,
+  mime_tip VARCHAR(100) NOT NULL DEFAULT '-',
+  velicina_u_bajtovima BIGINT NOT NULL DEFAULT 0,
+  putanja_datoteke VARCHAR(500) NOT NULL,
+  napomena VARCHAR(500) NOT NULL DEFAULT '-',
+  vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_privitak),
+  KEY idx_privitak_pregled (id_pregled),
+  KEY idx_privitak_nalaz (id_nalaz),
+  KEY idx_privitak_uputnica (id_uputnica),
+  KEY idx_privitak_racun (id_racun),
+  CONSTRAINT chk_privitak_tocno_jedan_roditelj CHECK (
+    (id_pregled IS NOT NULL AND id_nalaz IS NULL AND id_uputnica IS NULL AND id_racun IS NULL)
+    OR (id_pregled IS NULL AND id_nalaz IS NOT NULL AND id_uputnica IS NULL AND id_racun IS NULL)
+    OR (id_pregled IS NULL AND id_nalaz IS NULL AND id_uputnica IS NOT NULL AND id_racun IS NULL)
+    OR (id_pregled IS NULL AND id_nalaz IS NULL AND id_uputnica IS NULL AND id_racun IS NOT NULL)
+  ),
+  CONSTRAINT fk_privitak_pregled
+    FOREIGN KEY (id_pregled) REFERENCES pregled (id_pregled)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_privitak_nalaz
+    FOREIGN KEY (id_nalaz) REFERENCES nalaz (id_nalaz)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_privitak_uputnica
+    FOREIGN KEY (id_uputnica) REFERENCES uputnica (id_uputnica)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_privitak_racun
+    FOREIGN KEY (id_racun) REFERENCES racun (id_racun)
+    ON DELETE CASCADE
+);
+
 CREATE TABLE stavka_racuna (
   id_stavka_racuna BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   id_racun BIGINT UNSIGNED NOT NULL,
-  id_usluga BIGINT UNSIGNED NOT NULL,
+  id_pregled_usluga BIGINT UNSIGNED NULL DEFAULT NULL,
+  id_usluga BIGINT UNSIGNED NULL DEFAULT NULL,
   opis VARCHAR(500) NOT NULL DEFAULT '-',
   kolicina DECIMAL(18,2) NOT NULL DEFAULT 1,
   jedinicna_cijena DECIMAL(18,2) NOT NULL DEFAULT 0,
@@ -542,10 +498,18 @@ CREATE TABLE stavka_racuna (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_stavka_racuna),
-  KEY idx_stavka_racuna_racun_id (id_racun),
-  KEY idx_stavka_racuna_usluga_id (id_usluga),
+  KEY idx_stavka_racuna_racun (id_racun),
+  KEY idx_stavka_racuna_pregled_usluga (id_pregled_usluga),
+  KEY idx_stavka_racuna_usluga (id_usluga),
+  CONSTRAINT chk_stavka_racuna_izvor CHECK (
+    (id_pregled_usluga IS NOT NULL AND id_usluga IS NULL)
+    OR (id_pregled_usluga IS NULL AND id_usluga IS NOT NULL)
+  ),
   CONSTRAINT fk_stavka_racuna_racun
     FOREIGN KEY (id_racun) REFERENCES racun (id_racun)
+    ON DELETE RESTRICT,
+  CONSTRAINT fk_stavka_racuna_pregled_usluga
+    FOREIGN KEY (id_pregled_usluga) REFERENCES pregled_usluga (id_pregled_usluga)
     ON DELETE RESTRICT,
   CONSTRAINT fk_stavka_racuna_usluga
     FOREIGN KEY (id_usluga) REFERENCES usluga (id_usluga)
@@ -563,39 +527,36 @@ CREATE TABLE uplata (
   vrijeme_kreiranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   vrijeme_azuriranja DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_uplata),
-  KEY idx_uplata_racun_id (id_racun),
-  KEY idx_uplata_nacin_placanja_id (id_nacin_placanja),
+  KEY idx_uplata_racun (id_racun),
+  KEY idx_uplata_nacin_placanja (id_nacin_placanja),
   KEY idx_uplata_placeno_u (placeno_u),
   CONSTRAINT fk_uplata_racun
     FOREIGN KEY (id_racun) REFERENCES racun (id_racun)
-      ON DELETE RESTRICT,
+    ON DELETE RESTRICT,
   CONSTRAINT fk_uplata_nacin_placanja
     FOREIGN KEY (id_nacin_placanja) REFERENCES nacin_placanja (id_nacin_placanja)
     ON DELETE RESTRICT
 );
 
 -- =========================================================
--- POVEZANOST TABLICA
+-- POVEZANOST TABLICA (usklađeno s FK-ovima u ovom DDL-u)
 -- =========================================================
--- pacijent je povezan s: uputnica, termin_pacijenta, pregled, nalaz, terapija, racun
--- odjel je povezan s: ordinacija, zaposlenik, usluga, termin_pacijenta
--- ordinacija je povezan s: zaposlenik, raspored_djelatnika, termin_pacijenta
--- specijalizacija je povezan s: zaposlenik
--- zaposlenik je povezan s: raspored_djelatnika, termin_pacijenta, pregled, nalaz, terapija
--- sifarnik_usluga je povezan sa: usluga
--- usluga je povezan s: cijena_usluge, pregled_usluga, stavka_racuna
--- uputnica je povezan s: termin_pacijenta
--- sifarnik_statusa_termina je povezan s: termin_pacijenta
--- termin_pacijenta je povezan s: pregled
--- status_pregleda je povezan s: pregled
--- pregled je povezan s: nalaz, terapija, racun, pregled_usluga, pregled_dijagnoza, privitak_pregleda
--- dijagnoza je povezan s: pregled_dijagnoza
--- tip_nalaza je povezan s: nalaz
--- status_nalaza je povezan s: nalaz
--- nalaz je povezan s: laboratorijski_rezultat, terapija
--- laboratorijski_parametar je povezan s: laboratorijski_rezultat
--- terapija je povezan s: preporuceni_lijek
--- privitak_pregleda je povezan s: pregled
--- nacin_placanja je povezan s: uplata
--- status_racuna je povezan s: racun
--- racun je povezan s: stavka_racuna, uplata
+-- pacijent: uputnica, termin_pacijenta, nalaz (samo samostalan nalaz), racun (bez pregleda)
+-- odjel: ordinacija, usluga
+-- ordinacija: zaposlenik, termin_pacijenta
+-- specijalizacija: zaposlenik
+-- zaposlenik: raspored_djelatnika, termin_pacijenta, pregled (obavljeni), nalaz (samo samostalan)
+-- usluga: cijena_usluge, termin_pacijenta, pregled_usluga, stavka_racuna (samo ako nema reda pregled_usluga)
+-- uputnica: termin_pacijenta, privitak
+-- termin_pacijenta: pregled (pacijent/planirani liječnik/vrijeme/usluga/ordinacija ovdje)
+-- pregled: opcionalno id_zaposlenik_obavljen (NULL = isti kao u terminu); terapija, racun, pregled_usluga,
+--          pregled_dijagnoza, privitak (opcionalno), nalaz (vezani nalaz)
+-- dijagnoza: pregled_dijagnoza
+-- tip_nalaza: nalaz
+-- nalaz: laboratorijski_rezultat, terapija; ili uz pregled (bez pacijent/zaposlenik) ili samostalan
+-- laboratorijski_parametar: laboratorijski_rezultat
+-- terapija: preporuceni_lijek (pacijent/lijecnik preko id_pregled -> termin)
+-- privitak: točno jedan od (pregled, nalaz, uputnica, racun) — opći model dokumenta
+-- nacin_placanja: uplata
+-- racun: stavka_racuna, uplata; pacijent NULL ako je vezan uz pregled (dohvat preko termina)
+-- stavka_racuna: ili id_pregled_usluga (izvor za račun uz pregled) ili id_usluga (račun bez pregleda)
