@@ -3,11 +3,6 @@ CREATE DATABASE poliklinika;
 
 USE poliklinika;
 
--- Model uskladen s akademskom kritikom: jedan izvor istine po koraku u glavnom toku
--- (termin -> pregled -> pregled_usluga -> racun); termin s uslugom i ordinacijom;
--- stavka_racuna vezana na pregled_usluga ili samo na uslugu; statusi u stupcu + CHECK;
--- bez hijerarhije sifarnik_usluga; zaposlenik samo na ordinaciju (odjel preko nje);
--- privitak opcenito (tocno jedan roditelj: pregled, nalaz, uputnica ili racun).
 
 CREATE TABLE pacijent (
   id_pacijent BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
