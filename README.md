@@ -1,69 +1,63 @@
-# Poliklinika - Baza podataka (Tim 13)
+# Poliklinika — baza podataka (Tim 13)
 
-Informacijski sustav poliklinike - MySQL baza podataka s hrvatskim nazivima tablica i kolona.
+MySQL shema poliklinike (hrvatski nazivi tablica i stupaca) i početni CSV za uvoz u mapu `podaci/`.
 
 ---
 
 ## Sadrzaj repozitorija
 
-| Datoteka/folder | Opis |
+| Datoteka / mapa | Opis |
 |---|---|
-| `poliklinika_mysql_ddl_clean.sql` | DDL skripta - kreira bazu i sve tablice |
-| `demo-csv/` | Demo CSV podaci (trenutno s engleskim headerima) |
-| `demo-csv.zip` | Isti demo CSV podaci u zip formatu |
-| `opis_baze_poliklinika.md` | Tekstualni opis modela baze |
-| `PoliklinikaProjekt.pdf` | ER model i specifikacija projekta |
+| `poliklinika_mysql_ddl_clean.sql` | DDL: brise/kreira bazu `poliklinika`, sve tablice, FK i CHECK ogranicenja |
+| `podaci/` | 25 CSV datoteka (jedna po tablici); nazivi stupaca kao u DDL-u |
+| `podaci.zip` | Arhiva mape `podaci/` |
+| `scripts/generiraj_csv_podaci.py` | Python skripta za ponovno generiranje sadrzaja `podaci/` |
+| `opis_baze_poliklinika.md` | Tekstualni opis modela |
+| `PoliklinikaProjekt.pdf` | Zadatak / projektna dokumentacija |
+| `eer_poliklinika.svg` | ER dijagram (vektor) |
+| `ER.png` | ER dijagram (raster) |
+| `ER_syntax.txt` | Biljeske uz ER sintaksu |
+
+---
+
+## Model ukratko
+
+Glavni tijek u podacima: **termin** (`termin_pacijenta`) → **pregled** → **pregled_usluga** (obavljene usluge) → **stavka_racuna** vezana uz red pregleda, ili uz samu **usluga** ako racun nije vezan uz pregled. Statusi su u stupcima (`status_termina`, `status_pregleda`, …) uz CHECK u DDL-u, ne kao posebne status-tablice. Zaposlenik je vezan uz jednu **ordinaciju**; odjel se dobije preko ordinacije.
 
 ---
 
 ## Preduvjeti
 
-Treba ti:
-
-- MySQL Server (npr. kroz XAMPP)
-- DBeaver (ili drugi SQL klijent)
-
-Preporuceni alati:
-
-- XAMPP: [https://www.apachefriends.org/](https://www.apachefriends.org/)
-- DBeaver: [https://dbeaver.io/download/](https://dbeaver.io/download/)
+- MySQL 8.x (npr. XAMPP)
+- Klijent za SQL (preporuka: [DBeaver](https://dbeaver.io/download/))
+- Za regeneriranje CSV-a: **Python 3** (bez dodatnih paketa)
 
 ---
 
 ## Postavljanje baze
 
-### 1) Pokreni MySQL
+### 1. Pokreni MySQL
 
-Ako koristis XAMPP: otvori XAMPP Control Panel i klikni `Start` za `MySQL`.
+U XAMPP-u: Control Panel → Start kod MySQL.
 
-### 2) Spoji se iz DBeaver-a
+### 2. Spoji se u DBeaveru
 
-1. Otvori DBeaver
-2. Lijevi panel -> desni klik na `localhost` -> `Connect`
-3. Standardne postavke:
-   - Host: `localhost`
-   - Port: `3306`
-   - Username: `root`
-   - Password: prazno (ako je default XAMPP)
+- Host: `localhost`
+- Port: `3306`
+- Korisnik: `root`
+- Lozinka: obično prazna na zadanoj XAMPP instalaciji
 
-### 3) Pokreni SQL skriptu
+### 3. Izvedi DDL
 
-1. `File -> Open File`
-2. Odaberi `poliklinika_mysql_ddl_clean.sql`
-3. Provjeri da je aktivna konekcija `localhost` (ne `<none>`)
-4. Pokreni cijeli script: `Alt + X` (`Execute SQL Script`)
+1. `File` → `Open File` → `poliklinika_mysql_ddl_clean.sql`
+2. Aktivna veza mora biti na bazu (ne `<none>`).
+3. Izvedi cijelu skriptu (npr. `Alt + X`, Execute SQL Script).
 
-Skripta:
+Skripta **brise** postojecu bazu `poliklinika` ako postoji, pa je iz pocetka kreira.
 
-- brise staru bazu `poliklinika` (ako postoji)
-- kreira novu bazu `poliklinika`
-- kreira sve tablice, kljuceve i FK veze
+### 4. Provjera
 
-### 4) Provjera
-
-U lijevom panelu: desni klik na `Databases` -> `Refresh` (F5).
-
-Trebas vidjeti bazu `poliklinika` s ovih 30 tablica:
+Osvjezi stablo baza (`F5`). Ocekuj bazu `poliklinika` i **25 tablica**:
 
 ```
 pacijent
@@ -71,53 +65,91 @@ odjel
 ordinacija
 specijalizacija
 zaposlenik
-sifarnik_usluga
 usluga
 cijena_usluge
 uputnica
-sifarnik_statusa_termina
 raspored_djelatnika
 termin_pacijenta
-status_pregleda
 pregled
 pregled_usluga
 dijagnoza
 pregled_dijagnoza
 tip_nalaza
-status_nalaza
 nalaz
 laboratorijski_parametar
 laboratorijski_rezultat
 terapija
 preporuceni_lijek
-privitak_pregleda
 nacin_placanja
-status_racuna
 racun
+privitak
 stavka_racuna
 uplata
 ```
 
 ---
 
-## Uvoz demo podataka (trenutno stanje)
+## Uvoz podataka iz CSV (`podaci/`)
 
-`demo-csv` datoteke su trenutno spremljene s engleskim nazivima tablica i kolona (npr. `patient.csv`, `first_name`, `invoice_item.csv`).
+- Kodiranje: **UTF-8**.
+- Svaka datoteka odgovara jednoj tablici (`pacijent.csv` → `pacijent`, …).
+- **Prazno polje** u CSV-u tumaci se kao `NULL` pri uvozu (ovisi o klijentu — u DBeaveru mapiraj prazno na NULL).
 
-Zbog toga postoji mismatch prema trenutnoj SQL shemi koja je na hrvatskim nazivima (npr. `pacijent`, `ime`, `stavka_racuna`).
+### Napomena o podacima
 
-To znaci:
+Brojevi (OIB, MBO, racuni, uplate), putanje na disku u **privitak** i kontakt pacijenata (telefon, `@gmail.com`) namijenjeni su **podaci za razvoj / predaju projekta**. Za stvarnu upotrebu zamijeni vlastitim evidencijama.
 
-- SQL shema je ispravna i spremna
-- CSV uvoz je moguc, ali uz rucno mapiranje kolona u DBeaver-u
-- plan je uskladiti `demo-csv` s hrvatskim nazivima u sljedecem koraku
+Pri ručnom unosu ili vlastitim CSV-ima poštuj **CHECK** u DDL-u, npr.:
+
+- `nalaz`: ili vezan uz `pregled`, ili samostalan s `id_pacijent` + `id_zaposlenik`
+- `racun`: ili `id_pregled` ili `id_pacijent`, ne oboje
+- `stavka_racuna`: ili `id_pregled_usluga` ili `id_usluga`
+- `privitak`: točno jedan od četiri FK roditelja (pregled / nalaz / uputnica / racun)
+
+### Redoslijed uvoza (radi FK)
+
+1. pacijent  
+2. odjel  
+3. ordinacija  
+4. specijalizacija  
+5. zaposlenik  
+6. usluga  
+7. cijena_usluge  
+8. uputnica  
+9. raspored_djelatnika  
+10. termin_pacijenta  
+11. pregled  
+12. pregled_usluga  
+13. dijagnoza  
+14. pregled_dijagnoza  
+15. tip_nalaza  
+16. nalaz  
+17. laboratorijski_parametar  
+18. laboratorijski_rezultat  
+19. terapija  
+20. preporuceni_lijek  
+21. nacin_placanja  
+22. racun  
+23. privitak  
+24. stavka_racuna  
+25. uplata  
+
+### Regeneriranje CSV-a
+
+Iz korijena repozitorija:
+
+```bash
+python scripts/generiraj_csv_podaci.py
+```
+
+Zatim po zelji ponovo zapakiraj `podaci/` u `podaci.zip` (ili koristi zip iz repozitorija).
 
 ---
 
 ## Napomene za tim
 
-- Koristimo hrvatski naming standard (`snake_case`, ASCII znakovi)
-- Primarni kljucevi su `BIGINT UNSIGNED AUTO_INCREMENT`
-- Datum: `YYYY-MM-DD`, datetime: `YYYY-MM-DD HH:MM:SS`
-- Valuta je `EUR`
-- Skripta je predvidena za MySQL 8.x
+- Konvencija imenovanja: hrvatski pojmovi, `snake_case` za tablice i stupce.
+- Primarni kljucevi: `BIGINT UNSIGNED AUTO_INCREMENT`.
+- Datum `YYYY-MM-DD`, vrijeme/datetime `YYYY-MM-DD HH:MM:SS`.
+- Valuta u primjerima: **EUR**.
+- DDL je ciljan na **MySQL 8.x** (CHECK se koristi dosljedno).
