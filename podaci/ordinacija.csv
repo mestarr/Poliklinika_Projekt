@@ -1,0 +1,6 @@
+id_ordinacija,id_odjel,sifra,naziv,opis,vrijeme_kreiranja,vrijeme_azuriranja
+1,1,ORD-INT-01,Ordinacija interne 1,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,1,ORD-INT-02,Ordinacija interne 2,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,2,ORD-LAB-01,Uzimanje uzoraka,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,3,ORD-ORT-01,Ortopedija 1,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+5,3,ORD-ORT-02,Ortopedija 2,-,2026-05-05 10:00:00,2026-05-05 10:00:00

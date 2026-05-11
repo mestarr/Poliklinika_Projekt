@@ -1,0 +1,9 @@
+id_usluga,sifra,naziv,id_odjel,opis,trajanje_pregleda_minute,vrijeme_kreiranja,vrijeme_azuriranja
+1,U-PREG,Opći pregled,1,-,30,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,U-EKG,EKG,1,-,20,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,U-KARD,Kardiološki pregled,1,-,45,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,U-KRV,Krvna slika,2,-,15,2026-05-05 10:00:00,2026-05-05 10:00:00
+5,U-BIO,Biokemija osnovna,2,-,15,2026-05-05 10:00:00,2026-05-05 10:00:00
+6,U-RXG,RTG snimka,3,-,25,2026-05-05 10:00:00,2026-05-05 10:00:00
+7,U-ORT-KONS,Ortopedska konsultacija,3,-,30,2026-05-05 10:00:00,2026-05-05 10:00:00
+8,U-KONT,Kontrolni pregled,1,-,20,2026-05-05 10:00:00,2026-05-05 10:00:00

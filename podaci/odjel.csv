@@ -1,0 +1,4 @@
+id_odjel,sifra,naziv,opis,vrijeme_kreiranja,vrijeme_azuriranja
+1,INT,Interna medicina,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,LAB,Laboratorij,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,ORT,Ortopedija,-,2026-05-05 10:00:00,2026-05-05 10:00:00
