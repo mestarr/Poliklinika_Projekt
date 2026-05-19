@@ -1,0 +1,13 @@
+id_termin_pacijenta,id_pacijent,id_uputnica,id_zaposlenik,id_usluga,id_ordinacija,status_termina,vrijeme_odrzavanja,procjenjeno_trajanje_pregleda_minute,razlog_dolaska,razlog_otkazivanja,vrijeme_kreiranja,vrijeme_azuriranja
+1,1,1,1,1,1,ZAVRSEN,2026-05-06 09:00:00,30,MZ upucenje - tlak.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,2,2,2,2,2,ZAVRSEN,2026-05-06 10:00:00,30,umor pri laksem naprezanju - kardiologija.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,3,3,6,3,1,ZAVRSEN,2026-05-06 11:00:00,45,Mršavljenje bez dijete - raditi krv.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,4,4,4,7,4,ZAVRSEN,2026-05-07 09:30:00,30,koljeno desno boli vec tjednima.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+5,5,5,5,7,5,ZAVRSEN,2026-05-07 10:30:00,30,drugi dolazak na ortopediju.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+6,6,6,3,4,3,ZAVRSEN,2026-05-07 08:00:00,30,"prehlada prosla, ostala kasalj.",-,2026-05-05 10:00:00,2026-05-05 10:00:00
+7,7,,1,8,1,ZAVRSEN,2026-05-08 09:00:00,30,godišnji sistematski - privatno.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+8,8,,2,1,2,ZAVRSEN,2026-05-08 11:00:00,30,glavobolje ujutro.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+9,9,,4,6,4,ZAKAZAN,2026-06-01 14:00:00,30,RTG prije odluke o dalinjem lijecenju.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+10,10,,5,7,5,OTKAZAN,2026-05-09 12:00:00,30,-,pacijent javio da ne moze - sluzbeni put,2026-05-05 10:00:00,2026-05-05 10:00:00
+11,1,,6,2,1,ZAVRSEN,2026-05-10 09:00:00,30,ponovljen termin.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+12,3,,4,6,4,ZAVRSEN,2026-05-11 10:00:00,30,nalaz iz PGZ - nastavak.,-,2026-05-05 10:00:00,2026-05-05 10:00:00

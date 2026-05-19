@@ -1,0 +1,13 @@
+id_nalaz,id_pregled,id_pacijent,id_zaposlenik,id_tip_nalaza,status_nalaza,izdano_u,sazetak,napomena,vrijeme_kreiranja,vrijeme_azuriranja
+1,1,,,1,IZDAN,2026-05-08 12:00:00,Glukoza i lipidi bez odstupanja; hemoglobin u normi.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,2,,,3,IZDAN,2026-05-08 12:00:00,EKG sinusni ritam; bez novih repolarizacijskih promjena.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,3,,,1,IZDAN,2026-05-08 12:00:00,CRP u granicama; bez leukocitoze.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,4,,,3,IZDAN,2026-05-08 12:00:00,RTG koljena OA stupanj II po Kellgren-Lawrence.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+5,5,,,1,IZDAN,2026-05-08 12:00:00,Usporedba s proslogodisnjim RTG - bez naglog pogorsanja.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+6,6,,,3,IZDAN,2026-05-08 12:00:00,Krvna slika bez znacajnih odstupanja.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+7,7,,,1,IZDAN,2026-05-08 12:00:00,Biokemija uredna za dob.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+8,8,,,3,IZDAN,2026-05-08 12:00:00,Kompletna krvna slika - sve u referenci.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+9,9,,,1,IZDAN,2026-05-08 12:00:00,RTG bez prijeloma; sumnjiva artroza.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+10,10,,,3,IZDAN,2026-05-08 12:00:00,Bez laboratorijskih odstupanja.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+11,,9,1,1,IZDAN,2026-05-04 09:00:00,Vanjski lab - sve OK osim blago snizen željezo.,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+12,,10,2,2,VERIFIKACIJA,2026-05-04 10:00:00,Snimka koljena iz Bolnice - prijava na pregled.,-,2026-05-05 10:00:00,2026-05-05 10:00:00

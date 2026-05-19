@@ -1,0 +1,7 @@
+id_uputnica,id_pacijent,broj_uputnice,datum_uputnice,opis,vrijeme_kreiranja,vrijeme_azuriranja
+1,1,UP-2026-0001,2026-04-01,MZ OB Zagreb - kontrola hipertenzije.,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,2,UP-2026-0002,2026-04-01,Kardiološki ambulantni povrat od prosinca.,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,3,UP-2026-0003,2026-04-01,Sumnja na anemiju - traži laboratorij.,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,4,UP-2026-0004,2026-04-01,Bol desnog koljena pri hodu vec ~ 3 tjedna.,2026-05-05 10:00:00,2026-05-05 10:00:00
+5,5,UP-2026-0005,2026-04-01,Knee OA PO stupnjevima - drugo misljenje.,2026-05-05 10:00:00,2026-05-05 10:00:00
+6,6,UP-2026-0006,2026-04-01,Postavljanje kontrole lipidnog statusa.,2026-05-05 10:00:00,2026-05-05 10:00:00

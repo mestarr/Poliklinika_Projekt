@@ -1,0 +1,11 @@
+id_pregled,id_termin_pacijenta,id_zaposlenik_obavljen,status_pregleda,vrijeme_odrzavanja_pregleda,anamneza,zakljucak,vrijeme_kreiranja,vrijeme_azuriranja
+1,1,,ZAVRSEN,2026-05-06 09:00:00,KO bez simptoma akutne infekcije. AP hipertenzija u lijecenju.,Stabilno - nastaviti sto pije; kontrola kod OB za tlak.,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,2,,ZAVRSEN,2026-05-06 10:00:00,Subjektivno pritisak u prsima pri lagodnoj setnji uzbrdo. Miruje bez bola.,Bez novih promjena na EKG-u; ako se bol ponavlja obratiti se hitnoj.,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,3,6,ZAVRSEN,2026-05-06 11:00:00,Pacijent navodi zamor posljednjih mjeseci; bez otoka ekstremiteta.,Radi laboratorij bez posebnog narucivanja; ako sto odskace javljamo.,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,4,,ZAVRSEN,2026-05-07 09:30:00,Lokalna bol prednje strane desnog koljena; bez trauma.,Klinicki OA koljena - fizikalna terapija i NSAID po potrebi.,2026-05-05 10:00:00,2026-05-05 10:00:00
+5,5,,ZAVRSEN,2026-05-07 10:30:00,Povratni pacijent - isto koljeno kao prosli put.,Nastaviti sto koristi; ako za 6 tjedana nema poboljsanja razmotriti MR.,2026-05-05 10:00:00,2026-05-05 10:00:00
+6,6,,ZAVRSEN,2026-05-07 08:00:00,Kasalj bez groznice 10 dana; normalni auskultatorni nalazi.,Simptomatski tretman; povrat ako temperatura ili dispneja.,2026-05-05 10:00:00,2026-05-05 10:00:00
+7,7,,ZAVRSEN,2026-05-08 09:00:00,Zeli sistematski bez posebnih zalbi.,Osnovni parametri u redu; preporuka kontrola kolesterola za godinu dana.,2026-05-05 10:00:00,2026-05-05 10:00:00
+8,8,,ZAVRSEN,2026-05-08 11:00:00,Glavobolje pri naprezanju vida blizu.,Viziometrija - dodatak za citanje; ako nestabilno oftalmolog.,2026-05-05 10:00:00,2026-05-05 10:00:00
+9,11,,ZAVRSEN,2026-05-10 09:00:00,Zeli RTG koljena prije razgovora o artroskopiji.,RTG u prilogu; konsenzus uz ortopeda na sljedeci pregled.,2026-05-05 10:00:00,2026-05-05 10:00:00
+10,12,,ZAVRSEN,2026-05-11 10:00:00,Rani termin jer je prosli put cekao dugo u cekaonici.,Bez posebnosti uz pregled - sve po protokolu.,2026-05-05 10:00:00,2026-05-05 10:00:00

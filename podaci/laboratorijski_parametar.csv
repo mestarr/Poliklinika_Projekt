@@ -1,0 +1,6 @@
+id_laboratorijski_parametar,sifra,naziv,opis,jedinica,vrijeme_kreiranja,vrijeme_azuriranja
+1,GLU,Glukoza,-,mmol/L,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,HB,Hemoglobin,-,g/L,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,CRP,CRP,-,mg/L,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,LEU,Leukociti,-,10^9/L,2026-05-05 10:00:00,2026-05-05 10:00:00
+5,TSH,TSH,-,mIU/L,2026-05-05 10:00:00,2026-05-05 10:00:00

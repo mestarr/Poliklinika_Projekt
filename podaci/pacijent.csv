@@ -1,0 +1,11 @@
+id_pacijent,oib,mbo,ime,prezime,spol,datum_rodjenja,broj_mobitela,email_adresa,adresa_stanovanja,grad,biljeska,vrijeme_kreiranja,vrijeme_azuriranja
+1,98765432101,1000000001,Ivan,Horvat,m,1982-03-14,+385911112221,ivan.horvat@gmail.com,Ilica 12,Zagreb,bez posebnosti,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,98765432102,1000000002,Ana,Kovač,ž,1990-11-02,+385981234001,ana.kovac@gmail.com,Trnjanski nasip 31,Zagreb,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,98765432103,1000000003,Marko,Babić,m,1976-06-25,+385992220031,marko.babic@gmail.com,Vukovarska 88,Osijek,penicilin - reakcija,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,98765432104,1000000004,Petra,Novak,ž,1988-01-30,+385912340877,petra.novak@gmail.com,Riječka 21,Rijeka,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+5,98765432105,1000000005,Luka,Majić,m,1995-04-18,+385953331002,luka.majic@gmail.com,Spinčićeva 7,Split,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+6,98765432106,1000000006,Maja,Jurić,ž,1984-09-09,+385914445556,maja.juric@gmail.com,Maksimirska 108,Zagreb,tlak povisen godinama,2026-05-05 10:00:00,2026-05-05 10:00:00
+7,98765432107,1000000007,Tomislav,Perić,m,1971-12-01,+385925556667,tomislav.peric@gmail.com,Strossmayerova 43,Osijek,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+8,98765432108,1000000008,Ivana,Šimić,ž,1999-07-22,+385976667778,ivana.simic@gmail.com,Bačvice bb,Split,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+9,98765432109,1000000009,Nikola,Vuković,m,1968-05-05,+385917778889,nikola.vukovic@gmail.com,Krste Pavletića 11,Zadar,DM tip 2 - Metformin,2026-05-05 10:00:00,2026-05-05 10:00:00
+10,98765432110,1000000010,Sara,Lesić,ž,1992-02-28,+385918889990,sara.lesic@gmail.com,Trg kralja Tomislava 4,Varaždin,-,2026-05-05 10:00:00,2026-05-05 10:00:00

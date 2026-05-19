@@ -1,0 +1,11 @@
+id_dijagnoza,sifra,naziv,opis,vrijeme_kreiranja,vrijeme_azuriranja
+1,I10,Esencijalna hipertenzija,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,E11,Diabetes mellitus tip 2,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,M54.5,Bol u donjem dijelu leđa,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,J06.9,Akutna infekcija gornjih disnih putova,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+5,K29.7,Gastritis NS,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+6,H52.4,Presbiopija,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+7,R51,Glavobolja,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+8,Z00.0,Opći pregled bez nalaza,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+9,M17,Gonartroza,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+10,R79.8,Abnormalni nalazi krvi,-,2026-05-05 10:00:00,2026-05-05 10:00:00

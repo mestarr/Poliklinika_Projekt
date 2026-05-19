@@ -1,0 +1,5 @@
+id_privitak,id_pregled,id_nalaz,id_uputnica,id_racun,tip_privitka,naziv_datoteke,mime_tip,velicina_u_bajtovima,putanja_datoteke,napomena,vrijeme_kreiranja,vrijeme_azuriranja
+1,1,,,,PDF,aneks_pregled_01_signed.pdf,application/pdf,98234,/var/skladiste/dokumenti/pregled/2026/aneks_pregled_01_signed.pdf,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,,11,,,PDF,lab_export_kbc_09.pdf,application/pdf,118902,/var/skladiste/dokumenti/nalaz/2026/lab_export_kbc_09.pdf,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,,,1,,PDF,scan_uputnica_dzm.pdf,application/pdf,87221,/var/skladiste/dokumenti/uputnica/2026/scan_uputnica_dzm.pdf,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,,,,11,PDF,prilog_racun_admin.pdf,application/pdf,64501,/var/skladiste/dokumenti/racun/2026/prilog_racun_admin.pdf,-,2026-05-05 10:00:00,2026-05-05 10:00:00

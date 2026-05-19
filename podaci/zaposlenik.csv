@@ -1,0 +1,7 @@
+id_zaposlenik,sifra,ime,prezime,email,telefon,titula,id_specijalizacija,id_ordinacija,datum_zaposlenja,vrijeme_kreiranja,vrijeme_azuriranja
+1,Z001,Ivica,Horvat,ivica.horvat@poliklinika-zg.hr,+385912001101,lijecnik,1,1,2018-03-01,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,Z002,Marica,Kovačević,marica.kovacevic@poliklinika-zg.hr,+385912001102,lijecnik,1,2,2018-03-01,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,Z003,Petar,Jurković,petar.jurkovic@poliklinika-zg.hr,+385912001103,lijecnik,2,3,2018-03-01,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,Z004,Josip,Mandić,josip.mandic@poliklinika-zg.hr,+385912001104,lijecnik,3,4,2018-03-01,2026-05-05 10:00:00,2026-05-05 10:00:00
+5,Z005,Karlo,Tomić,karlo.tomic@poliklinika-zg.hr,+385912001105,lijecnik,3,5,2018-03-01,2026-05-05 10:00:00,2026-05-05 10:00:00
+6,Z006,Dora,Župan,dora.zupan@poliklinika-zg.hr,+385912001106,lijecnik,4,1,2018-03-01,2026-05-05 10:00:00,2026-05-05 10:00:00

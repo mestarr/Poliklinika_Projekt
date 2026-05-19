@@ -1,0 +1,6 @@
+id_specijalizacija,sifra,naziv,opis,vrijeme_kreiranja,vrijeme_azuriranja
+1,SPEC-INT,Internist,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+2,SPEC-LAB,Laborant,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+3,SPEC-ORT,Ortoped,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+4,SPEC-KARD,Kardiolog,-,2026-05-05 10:00:00,2026-05-05 10:00:00
+5,SPEC-OPH,Oftalmolog,-,2026-05-05 10:00:00,2026-05-05 10:00:00
