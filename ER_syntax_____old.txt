@@ -1,0 +1,286 @@
+Table pacijent {
+  id_pacijent bigint [pk, increment]
+  oib char(11) [unique]
+  mbo varchar
+  ime varchar
+  prezime varchar
+  spol char
+  datum_rodjenja date
+  broj_mobitela varchar
+  email_adresa varchar
+  adresa_stanovanja varchar
+  grad varchar
+  biljeska varchar
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table odjel {
+  id_odjel bigint [pk, increment]
+  sifra varchar [unique]
+  naziv varchar
+  opis varchar
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table ordinacija {
+  id_ordinacija bigint [pk, increment]
+  id_odjel bigint
+  sifra varchar [unique]
+  naziv varchar
+  opis varchar
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table specijalizacija {
+  id_specijalizacija bigint [pk, increment]
+  sifra varchar [unique]
+  naziv varchar
+  opis varchar
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table zaposlenik {
+  id_zaposlenik bigint [pk, increment]
+  sifra varchar [unique]
+  ime varchar
+  prezime varchar
+  email varchar
+  telefon varchar
+  titula varchar
+  id_specijalizacija bigint
+  id_ordinacija bigint
+  datum_zaposlenja date
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table usluga {
+  id_usluga bigint [pk, increment]
+  sifra varchar [unique]
+  naziv varchar
+  id_odjel bigint
+  opis varchar
+  trajanje_pregleda_minute int
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table cijena_usluge {
+  id_cijena_usluge bigint [pk, increment]
+  id_usluga bigint
+  datum_od date
+  datum_do date
+  iznos decimal
+  valuta char
+  porezna_stopa decimal
+  napomena varchar
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table uputnica {
+  id_uputnica bigint [pk, increment]
+  id_pacijent bigint
+  broj_uputnice varchar
+  datum_uputnice date
+  opis varchar
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table raspored_djelatnika {
+  id_raspored_djelatnika bigint [pk, increment]
+  id_djelatnik bigint
+  datum date
+  vrijeme_od time
+  vrijeme_do time
+  biljeska varchar
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table termin_pacijenta {
+  id_termin_pacijenta bigint [pk, increment]
+  id_pacijent bigint
+  id_uputnica bigint
+  id_zaposlenik bigint
+  id_usluga bigint
+  id_ordinacija bigint
+  status_termina varchar
+  vrijeme_odrzavanja datetime
+  procjenjeno_trajanje_pregleda_minute int
+  razlog_dolaska varchar
+  razlog_otkazivanja varchar
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table pregled {
+  id_pregled bigint [pk, increment]
+  id_termin_pacijenta bigint
+  id_zaposlenik_obavljen bigint
+  status_pregleda varchar
+  vrijeme_odrzavanja_pregleda datetime
+  anamneza text
+  zakljucak text
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table pregled_usluga {
+  id_pregled_usluga bigint [pk, increment]
+  id_pregled bigint
+  id_usluga bigint
+  kolicina decimal
+  cijena decimal
+  popust decimal
+  porezna_stopa decimal
+  ukupni_iznos decimal
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table dijagnoza {
+  id_dijagnoza bigint [pk, increment]
+  sifra varchar [unique]
+  naziv varchar
+  opis varchar
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table pregled_dijagnoza {
+  id_pregled_dijagnoza bigint [pk, increment]
+  id_pregled bigint
+  id_dijagnoza bigint
+  primarna_oznaka boolean
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table tip_nalaza {
+  id_tip_nalaza bigint [pk, increment]
+  sifra varchar [unique]
+  naziv varchar
+  opis varchar
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table nalaz {
+  id_nalaz bigint [pk, increment]
+  id_pregled bigint
+  id_pacijent bigint
+  id_zaposlenik bigint
+  id_tip_nalaza bigint
+  status_nalaza varchar
+  izdano_u datetime
+  sazetak varchar
+  napomena text
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table laboratorijski_parametar {
+  id_laboratorijski_parametar bigint [pk, increment]
+  sifra varchar [unique]
+  naziv varchar
+  opis varchar
+  jedinica varchar
+  vrijeme_kreiranja datetime
+  vrijeme_azuriranja datetime
+}
+
+Table laboratorijski_rezultat {
+  id_laboratorijski_rezultat bigint [pk, increment]
+  id_nalaz bigint
+  id_laboratorijski_parametar bigint
+}
+
+Table terapija {
+  id_terapija bigint [pk, increment]
+  id_pregled bigint
+  id_nalaz bigint
+}
+
+Table preporuceni_lijek {
+  id_preporuceni_lijek bigint [pk, increment]
+  id_terapija bigint
+}
+
+Table nacin_placanja {
+  id_nacin_placanja bigint [pk, increment]
+  sifra varchar [unique]
+  naziv varchar
+}
+
+Table racun {
+  id_racun bigint [pk, increment]
+  broj_racuna varchar [unique]
+  id_pacijent bigint
+  id_pregled bigint
+}
+
+Table privitak {
+  id_privitak bigint [pk, increment]
+  id_pregled bigint
+  id_nalaz bigint
+  id_uputnica bigint
+  id_racun bigint
+}
+
+Table stavka_racuna {
+  id_stavka_racuna bigint [pk, increment]
+  id_racun bigint
+  id_pregled_usluga bigint
+  id_usluga bigint
+}
+
+Table uplata {
+  id_uplata bigint [pk, increment]
+  id_racun bigint
+  id_nacin_placanja bigint
+}
+
+Ref: ordinacija.id_odjel > odjel.id_odjel
+Ref: zaposlenik.id_specijalizacija > specijalizacija.id_specijalizacija
+Ref: zaposlenik.id_ordinacija > ordinacija.id_ordinacija
+Ref: usluga.id_odjel > odjel.id_odjel
+Ref: cijena_usluge.id_usluga > usluga.id_usluga
+Ref: uputnica.id_pacijent > pacijent.id_pacijent
+Ref: raspored_djelatnika.id_djelatnik > zaposlenik.id_zaposlenik
+Ref: termin_pacijenta.id_pacijent > pacijent.id_pacijent
+Ref: termin_pacijenta.id_uputnica > uputnica.id_uputnica
+Ref: termin_pacijenta.id_zaposlenik > zaposlenik.id_zaposlenik
+Ref: termin_pacijenta.id_usluga > usluga.id_usluga
+Ref: termin_pacijenta.id_ordinacija > ordinacija.id_ordinacija
+Ref: pregled.id_termin_pacijenta > termin_pacijenta.id_termin_pacijenta
+Ref: pregled.id_zaposlenik_obavljen > zaposlenik.id_zaposlenik
+Ref: pregled_usluga.id_pregled > pregled.id_pregled
+Ref: pregled_usluga.id_usluga > usluga.id_usluga
+Ref: pregled_dijagnoza.id_pregled > pregled.id_pregled
+Ref: pregled_dijagnoza.id_dijagnoza > dijagnoza.id_dijagnoza
+Ref: nalaz.id_pregled > pregled.id_pregled
+Ref: nalaz.id_pacijent > pacijent.id_pacijent
+Ref: nalaz.id_zaposlenik > zaposlenik.id_zaposlenik
+Ref: nalaz.id_tip_nalaza > tip_nalaza.id_tip_nalaza
+Ref: laboratorijski_rezultat.id_nalaz > nalaz.id_nalaz
+Ref: laboratorijski_rezultat.id_laboratorijski_parametar > laboratorijski_parametar.id_laboratorijski_parametar
+Ref: terapija.id_pregled > pregled.id_pregled
+Ref: terapija.id_nalaz > nalaz.id_nalaz
+Ref: preporuceni_lijek.id_terapija > terapija.id_terapija
+Ref: racun.id_pacijent > pacijent.id_pacijent
+Ref: racun.id_pregled > pregled.id_pregled
+Ref: privitak.id_pregled > pregled.id_pregled
+Ref: privitak.id_nalaz > nalaz.id_nalaz
+Ref: privitak.id_uputnica > uputnica.id_uputnica
+Ref: privitak.id_racun > racun.id_racun
+Ref: stavka_racuna.id_racun > racun.id_racun
+Ref: stavka_racuna.id_pregled_usluga > pregled_usluga.id_pregled_usluga
+Ref: stavka_racuna.id_usluga > usluga.id_usluga
+Ref: uplata.id_racun > racun.id_racun
+Ref: uplata.id_nacin_placanja > nacin_placanja.id_nacin_placanja

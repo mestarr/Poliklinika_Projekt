@@ -2,7 +2,7 @@ USE poliklinika;
 
 -- =========================================================
 -- POLIKLINIKA - SVI SQL UPITI
--- Osnovni/jaki upiti + dodatni kompleksni upiti
+-- Osnovni/jaki upiti + dodatni kompleksni upiti (bez CTE i window funkcija)
 -- =========================================================
 
 
@@ -338,7 +338,14 @@ ORDER BY p.id, t.vrijeme_odrzavanja;
 -- =========================================================
 
 -- 1. Pregled opterecenja odjela: termini, pregledi, realizacija, ukupni iznos i prosjecna naplata
-WITH termini_po_odjelu AS (
+SELECT 
+    t.odjel,
+    t.broj_termina,
+    t.broj_pregleda,
+    t.postotak_realizacije,
+    COALESCE(p.ukupni_iznos_usluga, 0) AS ukupni_iznos_usluga,
+    COALESCE(p.prosjecni_iznos_usluge, 0) AS prosjecni_iznos_usluge
+FROM (
     SELECT 
         o.id AS id_odjel,
         o.naziv AS odjel,
@@ -351,8 +358,8 @@ WITH termini_po_odjelu AS (
     LEFT JOIN termin_pacijenta t ON t.id = tpu.id_termin_pacijenta
     LEFT JOIN pregled pr ON pr.id_termin_pacijenta = t.id
     GROUP BY o.id, o.naziv
-),
-prihod_po_odjelu AS (
+) t
+LEFT JOIN (
     SELECT 
         o.id AS id_odjel,
         ROUND(SUM(pu.ukupni_iznos), 2) AS ukupni_iznos_usluga,
@@ -361,16 +368,7 @@ prihod_po_odjelu AS (
     LEFT JOIN usluga u ON u.id_odjel = o.id
     LEFT JOIN pregled_usluga pu ON pu.id_usluga = u.id
     GROUP BY o.id
-)
-SELECT 
-    t.odjel,
-    t.broj_termina,
-    t.broj_pregleda,
-    t.postotak_realizacije,
-    COALESCE(p.ukupni_iznos_usluga, 0) AS ukupni_iznos_usluga,
-    COALESCE(p.prosjecni_iznos_usluge, 0) AS prosjecni_iznos_usluge
-FROM termini_po_odjelu t
-LEFT JOIN prihod_po_odjelu p ON p.id_odjel = t.id_odjel
+) p ON p.id_odjel = t.id_odjel
 ORDER BY ukupni_iznos_usluga DESC, broj_pregleda DESC;
 
 -- 2. Top 10 pacijenata prema ukupnoj potrosnji, broju pregleda i broju razlicitih odjela
@@ -430,8 +428,15 @@ JOIN odjel o ON o.id = u.id_odjel
 GROUP BY o.id, o.naziv
 ORDER BY prosjecno_kasnjenje_min DESC;
 
--- 5. Usluge koje donose najveci prihod po mjesecu
-WITH prihod_usluga AS (
+-- 5. Usluge koje donose najveci prihod po mjesecu (top 5 po mjesecu)
+SELECT
+    pu_stat.mjesec,
+    pu_stat.id_usluga,
+    pu_stat.usluga,
+    pu_stat.odjel,
+    pu_stat.broj_obavljanja,
+    pu_stat.prihod
+FROM (
     SELECT
         DATE_FORMAT(pr.vrijeme_odrzavanja_pregleda, '%Y-%m') AS mjesec,
         u.id AS id_usluga,
@@ -444,17 +449,23 @@ WITH prihod_usluga AS (
     JOIN usluga u ON u.id = pu.id_usluga
     JOIN odjel o ON o.id = u.id_odjel
     GROUP BY DATE_FORMAT(pr.vrijeme_odrzavanja_pregleda, '%Y-%m'), u.id, u.naziv, o.naziv
-),
-rangirano AS (
-    SELECT
-        prihod_usluga.*,
-        ROW_NUMBER() OVER (PARTITION BY mjesec ORDER BY prihod DESC) AS rang_u_mjesecu
-    FROM prihod_usluga
-)
-SELECT *
-FROM rangirano
-WHERE rang_u_mjesecu <= 5
-ORDER BY mjesec, rang_u_mjesecu;
+) pu_stat
+WHERE (
+    SELECT COUNT(*)
+    FROM (
+        SELECT
+            DATE_FORMAT(pr2.vrijeme_odrzavanja_pregleda, '%Y-%m') AS mjesec,
+            u2.id AS id_usluga,
+            ROUND(SUM(pu2.ukupni_iznos), 2) AS prihod
+        FROM pregled_usluga pu2
+        JOIN pregled pr2 ON pr2.id = pu2.id_pregled
+        JOIN usluga u2 ON u2.id = pu2.id_usluga
+        GROUP BY DATE_FORMAT(pr2.vrijeme_odrzavanja_pregleda, '%Y-%m'), u2.id
+    ) bolje
+    WHERE bolje.mjesec = pu_stat.mjesec
+      AND bolje.prihod > pu_stat.prihod
+) < 5
+ORDER BY pu_stat.mjesec, pu_stat.prihod DESC;
 
 -- 6. Zaposlenici po ucinku: pregledi, prihod, prosjecna vrijednost pregleda
 SELECT
@@ -533,22 +544,6 @@ HAVING otvoreno > 0
 ORDER BY status_naplate, otvoreno DESC;
 
 -- 10. Mjesecni financijski pregled: izdani racuni, uplate i otvoreni iznos
-WITH racuni_mj AS (
-    SELECT
-        DATE_FORMAT(datum_izdavanja, '%Y-%m') AS mjesec,
-        COUNT(*) AS broj_racuna,
-        ROUND(SUM(ukupno_za_placanje), 2) AS ukupno_zaduzeno
-    FROM racun
-    GROUP BY DATE_FORMAT(datum_izdavanja, '%Y-%m')
-),
-uplate_mj AS (
-    SELECT
-        DATE_FORMAT(placeno_u, '%Y-%m') AS mjesec,
-        COUNT(*) AS broj_uplata,
-        ROUND(SUM(iznos), 2) AS ukupno_placeno
-    FROM uplata
-    GROUP BY DATE_FORMAT(placeno_u, '%Y-%m')
-)
 SELECT
     r.mjesec,
     r.broj_racuna,
@@ -556,8 +551,22 @@ SELECT
     COALESCE(u.broj_uplata, 0) AS broj_uplata,
     COALESCE(u.ukupno_placeno, 0) AS ukupno_placeno,
     ROUND(r.ukupno_zaduzeno - COALESCE(u.ukupno_placeno, 0), 2) AS razlika
-FROM racuni_mj r
-LEFT JOIN uplate_mj u ON u.mjesec = r.mjesec
+FROM (
+    SELECT
+        DATE_FORMAT(datum_izdavanja, '%Y-%m') AS mjesec,
+        COUNT(*) AS broj_racuna,
+        ROUND(SUM(ukupno_za_placanje), 2) AS ukupno_zaduzeno
+    FROM racun
+    GROUP BY DATE_FORMAT(datum_izdavanja, '%Y-%m')
+) r
+LEFT JOIN (
+    SELECT
+        DATE_FORMAT(placeno_u, '%Y-%m') AS mjesec,
+        COUNT(*) AS broj_uplata,
+        ROUND(SUM(iznos), 2) AS ukupno_placeno
+    FROM uplata
+    GROUP BY DATE_FORMAT(placeno_u, '%Y-%m')
+) u ON u.mjesec = r.mjesec
 ORDER BY r.mjesec;
 
 -- 11. Pacijenti koji su imali vise razlicitih specijalizacija
@@ -621,36 +630,6 @@ GROUP BY tp.id, p.ime, p.prezime, tp.procjenjeno_trajanje_pregleda_minute
 ORDER BY ABS(razlika_minuta) DESC;
 
 -- 15. Sveobuhvatni prikaz pacijenta: zadnji termin, zadnji pregled, zadnji nalaz i zadnji racun
-WITH zadnji_termin AS (
-    SELECT 
-        id_pacijent,
-        MAX(vrijeme_odrzavanja) AS zadnji_termin
-    FROM termin_pacijenta
-    GROUP BY id_pacijent
-),
-zadnji_pregled AS (
-    SELECT 
-        id_pacijent,
-        MAX(vrijeme_odrzavanja_pregleda) AS zadnji_pregled
-    FROM pregled
-    GROUP BY id_pacijent
-),
-zadnji_nalaz AS (
-    SELECT 
-        id_pacijent,
-        MAX(izdano_u) AS zadnji_nalaz
-    FROM nalaz
-    GROUP BY id_pacijent
-),
-financije AS (
-    SELECT
-        r.id_pacijent,
-        ROUND(SUM(r.ukupno_za_placanje), 2) AS ukupno_racuni,
-        ROUND(COALESCE(SUM(u.iznos), 0), 2) AS ukupno_uplate
-    FROM racun r
-    LEFT JOIN uplata u ON u.id_racun = r.id
-    GROUP BY r.id_pacijent
-)
 SELECT
     p.id AS id_pacijent,
     CONCAT(p.ime, ' ', p.prezime) AS pacijent,
@@ -662,8 +641,177 @@ SELECT
     COALESCE(f.ukupno_uplate, 0) AS ukupno_uplate,
     ROUND(COALESCE(f.ukupno_racuni, 0) - COALESCE(f.ukupno_uplate, 0), 2) AS otvoreno
 FROM pacijent p
-LEFT JOIN zadnji_termin zt ON zt.id_pacijent = p.id
-LEFT JOIN zadnji_pregled zp ON zp.id_pacijent = p.id
-LEFT JOIN zadnji_nalaz zn ON zn.id_pacijent = p.id
-LEFT JOIN financije f ON f.id_pacijent = p.id
+LEFT JOIN (
+    SELECT id_pacijent, MAX(vrijeme_odrzavanja) AS zadnji_termin
+    FROM termin_pacijenta
+    GROUP BY id_pacijent
+) zt ON zt.id_pacijent = p.id
+LEFT JOIN (
+    SELECT id_pacijent, MAX(vrijeme_odrzavanja_pregleda) AS zadnji_pregled
+    FROM pregled
+    GROUP BY id_pacijent
+) zp ON zp.id_pacijent = p.id
+LEFT JOIN (
+    SELECT id_pacijent, MAX(izdano_u) AS zadnji_nalaz
+    FROM nalaz
+    GROUP BY id_pacijent
+) zn ON zn.id_pacijent = p.id
+LEFT JOIN (
+    SELECT
+        r.id_pacijent,
+        ROUND(SUM(r.ukupno_za_placanje), 2) AS ukupno_racuni,
+        ROUND(COALESCE(SUM(u.iznos), 0), 2) AS ukupno_uplate
+    FROM racun r
+    LEFT JOIN uplata u ON u.id_racun = r.id
+    GROUP BY r.id_pacijent
+) f ON f.id_pacijent = p.id
 ORDER BY otvoreno DESC, pacijent;
+
+-- 16. Pacijenti u rizičnom profilu: stariji od 65, dospjeli neplaćeni račun i abnormalan lab nalaz
+SELECT
+    p.id AS id_pacijent,
+    CONCAT(p.ime, ' ', p.prezime) AS pacijent,
+    TIMESTAMPDIFF(YEAR, p.datum_rodjenja, CURDATE()) AS godine,
+    COUNT(DISTINCT r.id) AS broj_dospjelih_racuna,
+    ROUND(SUM(r.ukupno_za_placanje) - COALESCE(SUM(u.iznos), 0), 2) AS ukupno_dospjelo,
+    COUNT(DISTINCT lr.id) AS broj_abnormalnih_mjerenja
+FROM pacijent p
+JOIN racun r
+    ON r.id_pacijent = p.id
+   AND r.status_racuna IN ('IZDAN', 'NACRT')
+   AND r.datum_dospijeca IS NOT NULL
+   AND r.datum_dospijeca < CURDATE()
+LEFT JOIN uplata u ON u.id_racun = r.id
+JOIN nalaz n ON n.id_pacijent = p.id
+JOIN laboratorijski_rezultat lr
+    ON lr.id_nalaz = n.id
+   AND lr.oznaka_odstupanja <> 0
+WHERE TIMESTAMPDIFF(YEAR, p.datum_rodjenja, CURDATE()) >= 65
+GROUP BY p.id, p.ime, p.prezime, p.datum_rodjenja
+HAVING ukupno_dospjelo > 0
+   AND broj_abnormalnih_mjerenja >= 1
+ORDER BY ukupno_dospjelo DESC, broj_abnormalnih_mjerenja DESC;
+
+-- 17. Termini zakazani izvan radnog vremena zaposlenika (preklapanje s rasporedom)
+SELECT
+    tp.id AS id_termina,
+    CONCAT(p.ime, ' ', p.prezime) AS pacijent,
+    CONCAT(z.ime, ' ', z.prezime) AS zaposlenik,
+    tp.vrijeme_odrzavanja,
+    rd.vrijeme_od AS smjena_od,
+    rd.vrijeme_do AS smjena_do,
+    CASE
+        WHEN TIME(tp.vrijeme_odrzavanja) < rd.vrijeme_od THEN 'prije smjene'
+        WHEN TIME(tp.vrijeme_odrzavanja) > rd.vrijeme_do THEN 'nakon smjene'
+        ELSE 'unutar smjene'
+    END AS vrsta_odstupanja
+FROM termin_pacijenta tp
+JOIN pacijent p ON p.id = tp.id_pacijent
+JOIN zaposlenik z ON z.id = tp.id_zaposlenik
+JOIN raspored_djelatnika rd
+    ON rd.id_djelatnik = z.id
+   AND rd.datum = DATE(tp.vrijeme_odrzavanja)
+WHERE tp.status_termina IN ('ZAKAZAN', 'DOLAZAK')
+  AND (
+        TIME(tp.vrijeme_odrzavanja) < rd.vrijeme_od
+     OR TIME(tp.vrijeme_odrzavanja) > rd.vrijeme_do
+      )
+ORDER BY tp.vrijeme_odrzavanja;
+
+-- 18. Pregledi skuplji od prosjeka odjela, s više dijagnoza i bez izdanog nalaza
+SELECT
+    pr.id AS id_pregled,
+    CONCAT(pa.ime, ' ', pa.prezime) AS pacijent,
+    o.naziv AS odjel,
+    ROUND(SUM(pu.ukupni_iznos), 2) AS ukupno_usluga,
+    ROUND(po.prosjek_odjela, 2) AS prosjecni_iznos_odjela,
+    COUNT(DISTINCT pd.id_dijagnoza) AS broj_dijagnoza
+FROM pregled pr
+JOIN pacijent pa ON pa.id = pr.id_pacijent
+JOIN pregled_usluga pu ON pu.id_pregled = pr.id
+JOIN usluga u ON u.id = pu.id_usluga
+JOIN odjel o ON o.id = u.id_odjel
+JOIN pregled_dijagnoza pd ON pd.id_pregled = pr.id
+JOIN (
+    SELECT
+        id_odjel,
+        AVG(ukupno) AS prosjek_odjela
+    FROM (
+        SELECT
+            u2.id_odjel,
+            SUM(pu2.ukupni_iznos) AS ukupno
+        FROM pregled pr2
+        JOIN pregled_usluga pu2 ON pu2.id_pregled = pr2.id
+        JOIN usluga u2 ON u2.id = pu2.id_usluga
+        WHERE pr2.status_pregleda = 'ZAVRSEN'
+        GROUP BY pr2.id, u2.id_odjel
+    ) zbroj_po_pregledu
+    GROUP BY id_odjel
+) po ON po.id_odjel = o.id
+WHERE pr.status_pregleda = 'ZAVRSEN'
+  AND NOT EXISTS (
+        SELECT 1
+        FROM nalaz n
+        WHERE n.id_pregled = pr.id
+          AND n.status_nalaza = 'IZDAN'
+    )
+GROUP BY pr.id, pa.ime, pa.prezime, o.naziv, po.prosjek_odjela
+HAVING COUNT(DISTINCT pd.id_dijagnoza) >= 2
+   AND SUM(pu.ukupni_iznos) > po.prosjek_odjela * 1.25
+ORDER BY ukupno_usluga DESC;
+
+-- 19. Odjeli i mjeseci s manjim prihodom nego prethodni mjesec
+SELECT
+    t.odjel,
+    t.mjesec,
+    t.prihod,
+    t_preth.prihod AS prihod_prethodni_mjesec,
+    ROUND(t.prihod - t_preth.prihod, 2) AS razlika_prihoda
+FROM (
+    SELECT
+        o.naziv AS odjel,
+        o.id AS id_odjel,
+        DATE_FORMAT(pr.vrijeme_odrzavanja_pregleda, '%Y-%m') AS mjesec,
+        ROUND(SUM(pu.ukupni_iznos), 2) AS prihod
+    FROM odjel o
+    JOIN usluga u ON u.id_odjel = o.id
+    JOIN pregled_usluga pu ON pu.id_usluga = u.id
+    JOIN pregled pr ON pr.id = pu.id_pregled
+    GROUP BY o.id, o.naziv, DATE_FORMAT(pr.vrijeme_odrzavanja_pregleda, '%Y-%m')
+) t
+JOIN (
+    SELECT
+        o.id AS id_odjel,
+        DATE_FORMAT(pr.vrijeme_odrzavanja_pregleda, '%Y-%m') AS mjesec,
+        ROUND(SUM(pu.ukupni_iznos), 2) AS prihod
+    FROM odjel o
+    JOIN usluga u ON u.id_odjel = o.id
+    JOIN pregled_usluga pu ON pu.id_usluga = u.id
+    JOIN pregled pr ON pr.id = pu.id_pregled
+    GROUP BY o.id, DATE_FORMAT(pr.vrijeme_odrzavanja_pregleda, '%Y-%m')
+) t_preth
+    ON t_preth.id_odjel = t.id_odjel
+   AND t_preth.mjesec = DATE_FORMAT(
+        DATE_SUB(STR_TO_DATE(CONCAT(t.mjesec, '-01'), '%Y-%m-%d'), INTERVAL 1 MONTH),
+        '%Y-%m'
+    )
+WHERE t.prihod < t_preth.prihod
+ORDER BY razlika_prihoda, t.odjel, t.mjesec;
+
+-- 20. Računi čiji zbroj stavki (s porezom i popustom) ne odgovara ukupnom iznosu računa
+SELECT
+    r.id AS id_racun,
+    r.broj_racuna,
+    r.status_racuna,
+    r.ukupno_za_placanje,
+    ROUND(SUM(sr.ukupan_iznos), 2) AS zbroj_stavki,
+    ROUND(ABS(r.ukupno_za_placanje - SUM(sr.ukupan_iznos)), 2) AS apsolutna_razlika,
+    COUNT(sr.id) AS broj_stavki,
+    SUM(CASE WHEN sr.id_pregled_usluga IS NOT NULL THEN 1 ELSE 0 END) AS stavke_iz_pregleda,
+    SUM(CASE WHEN sr.id_usluga IS NOT NULL AND sr.id_pregled_usluga IS NULL THEN 1 ELSE 0 END) AS stavke_bez_pregleda
+FROM racun r
+JOIN stavka_racuna sr ON sr.id_racun = r.id
+GROUP BY r.id, r.broj_racuna, r.status_racuna, r.ukupno_za_placanje
+HAVING apsolutna_razlika > 0.01
+   AND broj_stavki >= 2
+ORDER BY apsolutna_razlika DESC;
